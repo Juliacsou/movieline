@@ -108,8 +108,17 @@ body[data-screen="setup"] .site-footer .credits-word{color:#f6d899}
 #setup-screen .ticket-divider:before,#setup-screen .ticket-divider:after{background:#4e101b;border:0;width:17px;height:17px;top:-10px}
 #setup-screen .ticket-divider:before{left:-24px}
 #setup-screen .ticket-divider:after{right:-24px}
-#setup-screen .start-button{width:100%;min-height:57px;box-shadow:0 4px 0 #4b0b14;justify-content:space-between;background:#8c1725;color:#fff1c6;border:2px solid #5b0d19;border-radius:4px;padding:10px 18px;font-family:var(--stage-display);font-size:25px;font-weight:800;letter-spacing:1.5px;transition:background .18s,transform .18s}
-#setup-screen .start-button:hover:not(:disabled){background:#ad2630;box-shadow:0 4px 0 #4b0b14}
+#setup-screen .start-button{
+  --ticket-cut:#f6e2b8;position:relative;isolation:isolate;overflow:visible;width:100%;min-height:61px;
+  justify-content:space-between;padding:12px 28px;border:0;border-radius:4px;
+  color:#fff1c6;background:linear-gradient(180deg,#a81d2d,#7b1423);
+  clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);
+  box-shadow:0 7px 0 #5b111c,0 13px 20px #14020842;font-family:var(--stage-display);font-size:25px;font-weight:800;letter-spacing:1.5px;transition:background .18s,transform .18s
+}
+#setup-screen .start-button:before{content:"";position:absolute;inset:6px 16px;z-index:-1;border:2px solid #edc875;border-radius:2px;pointer-events:none}
+#setup-screen .start-button:after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle 10px at 0 50%,var(--ticket-cut) 0 9px,transparent 9.6px),radial-gradient(circle 10px at 100% 50%,var(--ticket-cut) 0 9px,transparent 9.6px)}
+#setup-screen .start-button:hover:not(:disabled){background:linear-gradient(180deg,#c42938,#941b29);box-shadow:0 7px 0 #5b111c,0 13px 20px #14020842}
+#setup-screen .start-button:focus-visible{outline:0;box-shadow:0 0 0 4px #ffe59b,0 7px 0 #5b111c,0 13px 20px #14020842}
 #setup-screen .start-button .start-spark{font-size:21px;color:#efc35d}
 #setup-screen .start-button .icon{width:24px;height:24px}
 #setup-screen .resume-button{font-family:var(--stage-display);font-size:15px;letter-spacing:.6px;color:#85262d;font-weight:800;padding:11px 0 0}

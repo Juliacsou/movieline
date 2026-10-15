@@ -5,5 +5,5 @@ export const CONFIG = Object.freeze({
   // Creator-only selection: 'famous' (1,000+ TMDB votes) or 'hits' (3,000+).
   // Players cannot change this. 'famous' includes very famous movies as well.
   DEFAULT_FAME: 'famous',
-  VERSION: '8.0.0'
+  VERSION: '9.0.0'
 });
