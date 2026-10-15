@@ -38,8 +38,10 @@ export function matchesFilters(movie, settings, categories) {
 }
 export function validSlot(timeline, year, slot) {
   if (!Number.isInteger(slot) || slot < 0 || slot > timeline.length || !Number.isInteger(year)) return false;
-  return (slot === 0 || timeline[slot - 1].year <= year) &&
-    (slot === timeline.length || year <= timeline[slot].year);
+  const prev = timeline[slot - 1], next = timeline[slot];
+  if (prev && next && prev.year === next.year && year === prev.year) return false;
+  return (slot === 0 || prev.year <= year) &&
+    (slot === timeline.length || year <= next.year);
 }
 export function idealSlot(timeline, year) {
   const i = timeline.findIndex(m => m.year > year);

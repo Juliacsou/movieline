@@ -163,6 +163,10 @@ function slotLabel(index) {
   const prev=game.timeline[index-1],next=game.timeline[index];
   return prev&&next?`Entre ${prev.title} e ${next.title}`:prev?`Depois de ${prev.title}`:`Antes de ${next.title}`;
 }
+function lockedSlot(index){
+  const prev=game?.timeline?.[index-1],next=game?.timeline?.[index];
+  return !!(prev&&next&&prev.year===next.year);
+}
 function renderTimeline(force=false) {
   if(!game||$('game-screen').hidden)return;
   const viewport=$('timeline-scroll'), oldScroll=viewport.scrollLeft;
@@ -174,9 +178,16 @@ function renderTimeline(force=false) {
   if(!force&&key===lastRange)return;lastRange=key;
   let html='';
   for(let i=first;i<=last;i++){
-    const selected=game.phase==='placing'&&game.slot===i;
-    const slotContent=selected?`${poster(game.current,'slot-movie-poster')}<span class="slot-question">?</span><div class="slot-movie-title">${escapeHTML(game.current.title)}</div>`:'<b aria-hidden="true">+</b>';
-    html+=`<div class="timeline-slot ${selected?'selected':''}" data-slot="${i}" style="left:${offset+i*stride}px"><button class="slot-button${selected?' film-frame':''}" ${selected?'data-current="true"':''} ${game.phase!=='placing'?'disabled':''} aria-label="${escapeHTML(slotLabel(i))}${selected?', posição selecionada':''}">${slotContent}</button></div>`;
+    const blocked=lockedSlot(i);
+    const selected=!blocked&&game.phase==='placing'&&game.slot===i;
+    let slotMarkup='';
+    if(blocked){
+      slotMarkup='<div class="slot-spacer" aria-hidden="true"></div>';
+    }else{
+      const slotContent=selected?`${poster(game.current,'slot-movie-poster')}<span class="slot-question">?</span><div class="slot-movie-title">${escapeHTML(game.current.title)}</div>`:'<b aria-hidden="true">+</b>';
+      slotMarkup=`<button class="slot-button${selected?' film-frame':''}" ${selected?'data-current="true"':''} ${game.phase!=='placing'?'disabled':''} aria-label="${escapeHTML(slotLabel(i))}${selected?', posição selecionada':''}">${slotContent}</button>`;
+    }
+    html+=`<div class="timeline-slot ${selected?'selected':''} ${blocked?'slot-locked':''}" ${blocked?'':'data-slot="'+i+'"'} style="left:${offset+i*stride}px">${slotMarkup}</div>`;
     if(i<game.timeline.length){
       const m=game.timeline[i],justPlaced=game.reveal?.correct&&m.instance===`turn-${game.attempted}`;
       html+=`<div class="timeline-unit" data-instance="${escapeHTML(m.instance)}" style="left:${offset+slot+i*stride}px"><article class="film-frame movie-card ${justPlaced?'new-card':''}">${poster(m)}${m.instance==='base'?'<span class="base-label">BASE</span>':''}<div class="card-year">${m.year}</div><div class="card-title" title="${escapeHTML(m.title)}">${escapeHTML(m.title)}</div></article><span class="timeline-dot"></span></div>`;
@@ -238,7 +249,9 @@ $('reveal-popup').addEventListener('close',()=>{
 });
 function selectSlot(index) {
   if(!game||game.phase!=='placing'||busy)return;
-  game.slot=Math.max(0,Math.min(game.timeline.length,index));
+  const slot=Math.max(0,Math.min(game.timeline.length,index));
+  if(lockedSlot(slot))return;
+  game.slot=slot;
   renderTimeline(true);$('confirm-button').disabled=false;$('placement-label').textContent=slotLabel(game.slot);
   $('live-region').textContent=`Posição escolhida: ${slotLabel(game.slot)}. Confirme quando estiver pronto.`;
   persistGame();
@@ -270,6 +283,7 @@ function updateDragHover(x,y){
   if(y>=rect.top-15&&y<=rect.bottom+10&&x>=rect.left&&x<=rect.right){
     const relative=x-rect.left+$('timeline-scroll').scrollLeft-geometry.offset;
     index=Math.max(0,Math.min(game.timeline.length,Math.round((relative-geometry.slot/2)/geometry.stride)));
+    if(lockedSlot(index))index=null;
   }
   if(hoverSlot!==index){document.querySelector('.drop-hover')?.classList.remove('drop-hover');hoverSlot=index;}
   if(index!==null)$('timeline-track').querySelector(`[data-slot="${index}"]`)?.classList.add('drop-hover');
