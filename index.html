@@ -7,9 +7,10 @@
 <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;650;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&family=Barlow+Condensed:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./styles.css?v=6">
 <link rel="stylesheet" href="./home.css?v=5">
-<script type="module" src="./js/app.js"></script>
+<link rel="stylesheet" href="./game.css?v=6">
+<script type="module" src="./js/app.js?v=6"></script>
 </head>
 <body data-screen="setup">
 <div class="home-stage" aria-hidden="true">
@@ -56,27 +57,57 @@
  </div>
 </section>
 <section id="game-screen" class="game-screen" hidden aria-label="Partida de Movieline">
- <div class="game-topline"><div><div class="eyebrow" id="round-label">SESSÃO EM ANDAMENTO</div><h2>Sua linha do tempo<span class="mini-star">✦</span></h2></div><div class="game-stats"><div><small>FILMES</small><b id="stat-progress">0 / 20</b></div><div><small>ACERTOS</small><b id="stat-score">0</b></div><div class="lives-stat"><small>VIDAS</small><b id="stat-lives">♥ 5</b></div><button class="outline-button" id="end-button">Encerrar<span data-icon="close"></span></button></div></div>
- <div class="progress-rail"><div id="progress-fill"></div></div>
- <div class="timeline-panel">
-  <div class="timeline-heading"><span><span data-icon="arrow-left"></span> MAIS ANTIGOS</span><span class="timeline-hint">Arraste o filme ou toque em um espaço</span><span>MAIS RECENTES <span data-icon="arrow-right"></span></span></div>
-  <div class="timeline-scroll" id="timeline-scroll" tabindex="0" role="region" aria-label="Linha do tempo horizontal. Use a roda do mouse, dois dedos ou as setas de navegação."><div class="timeline-track" id="timeline-track"></div></div>
-  <div class="timeline-bottom"><span><span data-icon="mouse"></span> Deslize para explorar sua linha</span><div class="timeline-nav"><button class="icon-button" id="scroll-left" aria-label="Rolar linha do tempo para a esquerda"><span data-icon="arrow-left"></span></button><button class="icon-button" id="scroll-right" aria-label="Rolar linha do tempo para a direita"><span data-icon="arrow-right"></span></button></div></div>
+ <div class="game-topline">
+  <div class="game-stats" aria-label="Placar">
+   <div class="stat-item" title="Filmes respondidos"><span data-icon="film"></span><span class="sr-only">Filmes: </span><b id="stat-progress">0 / 20</b></div>
+   <div class="stat-item" title="Acertos"><span data-icon="trophy"></span><span class="sr-only">Acertos: </span><b id="stat-score">0</b></div>
+   <div class="stat-item lives-stat" title="Vidas restantes"><span data-icon="heart"></span><span class="sr-only">Vidas: </span><b id="stat-lives">5</b></div>
+  </div><span id="round-label" class="sr-only"></span>
+  <button class="icon-button end-session" id="end-button" title="Encerrar partida" aria-label="Encerrar partida"><span data-icon="close"></span></button>
+  <div class="progress-rail" aria-hidden="true"><div id="progress-fill"></div></div>
  </div>
+ <section class="timeline-panel" aria-label="Linha do tempo">
+  <div class="timeline-heading"><span><span data-icon="arrow-left"></span>ANTES</span><h2>LINHA DO TEMPO</h2><span>DEPOIS<span data-icon="arrow-right"></span></span></div>
+  <div class="film-perforations" aria-hidden="true"></div>
+  <div class="timeline-scroll" id="timeline-scroll" tabindex="0" role="region" aria-label="Linha do tempo horizontal. Arraste o filme ou toque em um espa&#231;o. Use a roda do mouse, dois dedos ou as setas para rolar."><div class="timeline-track" id="timeline-track"></div></div>
+  <div class="film-perforations" aria-hidden="true"></div>
+  <div class="timeline-bottom"><span class="scroll-cue" aria-hidden="true"><span data-icon="mouse"></span><span data-icon="arrow-left"></span><span data-icon="arrow-right"></span></span><div class="timeline-nav"><button class="icon-button" id="scroll-left" title="Rolar para a esquerda" aria-label="Rolar linha para a esquerda"><span data-icon="arrow-left"></span></button><button class="icon-button" id="scroll-right" title="Rolar para a direita" aria-label="Rolar linha para a direita"><span data-icon="arrow-right"></span></button></div></div>
+ </section>
  <div class="turn-panel" id="turn-panel">
-  <div id="candidate" class="candidate" tabindex="0" role="button" aria-label="Arraste o filme para a linha do tempo. Setas esquerda e direita escolhem a posição."></div>
-  <div class="turn-copy"><div class="eyebrow" id="turn-eyebrow">EM QUE ANO ESSA HISTÓRIA COMEÇOU?</div><h3 id="turn-title">Onde esse filme se encaixa?</h3><p id="turn-instruction">Arraste o cartaz para um espaço da linha do tempo.<br>O ano só aparece depois de confirmar.</p><div id="placement-label" class="placement-label" aria-live="polite">Escolha uma posição acima</div></div>
-  <div class="turn-actions"><div class="position-buttons"><button class="outline-button" id="position-left" aria-label="Mover filme uma posição para a esquerda"><span data-icon="arrow-left"></span></button><span>POSIÇÃO</span><button class="outline-button" id="position-right" aria-label="Mover filme uma posição para a direita"><span data-icon="arrow-right"></span></button></div><button class="primary-button" id="confirm-button" disabled>Confirmar posição<span data-icon="check"></span></button><button class="primary-button" id="next-button" hidden>Próximo filme<span data-icon="arrow-right"></span></button><small id="turn-small-note">Pode mudar de ideia antes de confirmar.</small></div>
- </div>
- <div id="game-error" class="error-message" role="alert" hidden></div>
+  <div id="candidate" class="candidate" tabindex="0" role="button" aria-label="Arraste o filme para a linha do tempo" aria-describedby="placement-label"></div>
+  <div class="turn-actions">
+   <div class="position-buttons"><button class="outline-button" id="position-left" title="Mover para a esquerda" aria-label="Mover filme uma posi&#231;&#227;o para a esquerda"><span data-icon="arrow-left"></span></button><span data-icon="grip" aria-hidden="true"></span><button class="outline-button" id="position-right" title="Mover para a direita" aria-label="Mover filme uma posi&#231;&#227;o para a direita"><span data-icon="arrow-right"></span></button></div>
+   <button class="ticket-action" id="confirm-button" disabled><span data-icon="check"></span><span>REVELAR</span></button>
+   <button class="ticket-action" id="review-answer" hidden><span data-icon="clapper"></span><span>VER RESPOSTA</span></button>
+  </div><div id="placement-label" class="sr-only" aria-live="polite"></div>
+ </div><div id="game-error" class="error-message game-error" role="alert" hidden></div>
 </section>
-<section id="results-screen" class="results-screen" hidden>
- <div class="results-ticket"><div class="eyebrow">OS CRÉDITOS ESTÃO SUBINDO</div><div class="results-emblem" aria-hidden="true">★</div><h1 id="results-title">Que sessão!</h1><p id="results-description"></p><div class="results-stats"><div><b id="results-score">0</b><small>ACERTOS</small></div><div><b id="results-accuracy">0%</b><small>APROVEITAMENTO</small></div><div><b id="results-streak">0</b><small>MELHOR SEQUÊNCIA</small></div></div><div class="ticket-divider"></div><p id="results-detail"></p><button class="primary-button" id="play-again">MAIS UMA SESSÃO<span data-icon="arrow-right"></span></button><button class="plain-button" id="review-timeline">Rever minha linha do tempo</button></div>
+<section id="results-screen" class="results-screen" hidden aria-label="Resultado da partida">
+ <div class="results-ticket">
+  <div class="eyebrow">FIM DA SESS&Atilde;O</div><div class="results-emblem" aria-hidden="true"><span data-icon="trophy"></span></div>
+  <h1 id="results-title">Sess&atilde;o completa!</h1><p id="results-description"></p>
+  <div class="results-stats"><div><b id="results-score">0</b><small>ACERTOS</small></div><div><b id="results-accuracy">0%</b><small>APROVEITAMENTO</small></div><div><b id="results-streak">0</b><small>SEQU&Ecirc;NCIA</small></div></div>
+  <p id="results-detail"></p>
+  <div class="results-actions"><button class="ticket-action" id="play-again"><span data-icon="refresh"></span><span>Jogar novamente</span></button><button class="outline-button results-secondary" id="new-game"><span data-icon="home"></span><span>Novo jogo</span></button></div>
+  <div id="results-error" class="error-message" role="alert" hidden></div><button class="plain-button" id="review-timeline">Ver linha do tempo</button>
+ </div>
 </section>
 </main>
 <footer class="site-footer"><span class="footer-brand">© ALTIGAMES</span><button class="credits-trigger" id="credits-button"><span>Dados: <b>TMDB</b></span><span class="credits-word">Créditos ↗</span></button></footer>
 </div>
 <dialog id="info-dialog" class="info-dialog"><button class="dialog-close icon-button" aria-label="Fechar janela"><span data-icon="close"></span></button><div id="dialog-content"></div></dialog>
+<dialog id="reveal-popup" class="reveal-popup" aria-labelledby="reveal-title" aria-describedby="reveal-film-name reveal-film-year">
+ <div class="clapper-arm" aria-hidden="true"><span></span></div>
+ <div class="reveal-popup-card"><div class="clapper-rail" aria-hidden="true"></div>
+  <div class="reveal-popup-body">
+   <button type="button" class="icon-button reveal-close" id="reveal-close" title="Ver a linha" aria-label="Fechar resposta e ver a linha do tempo"><span data-icon="close"></span></button>
+   <div class="reveal-status" id="reveal-status" aria-hidden="true"></div><h2 id="reveal-title">Acertou!</h2>
+   <p class="reveal-film-name" id="reveal-film-name"></p><p class="reveal-film-year" id="reveal-film-year"></p><p class="reveal-detail" id="reveal-detail"></p>
+   <div id="reveal-error" class="error-message" role="alert" hidden></div>
+   <button class="ticket-action ticket-next-button" id="popup-next-button" type="button"><span data-icon="ticket"></span><span>Pr&oacute;ximo filme</span><span data-icon="arrow-right"></span></button>
+  </div>
+ </div>
+</dialog>
 <div class="toast" id="toast" role="status" hidden></div>
 <div class="sr-only" id="live-region" aria-live="polite"></div>
 <noscript><div class="noscript">Ative o JavaScript no navegador para jogar Movieline.</div></noscript>

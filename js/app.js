@@ -1,8 +1,8 @@
-import { CONFIG } from '../config.js';
+import { CONFIG } from '../config.js?v=6';
 import { settingsFrom, makeGame, confirmMovie, advanceMovie, finishGame } from './engine.js';
 import { loadCategories, proxyURL, MoviePool } from './api.js';
 import { readLocal, writeLocal, removeLocal, saveSession, loadSession } from './storage.js';
-import { icon, hydrateIcons, escapeHTML, poster, handleImages, toast, creditsHTML } from './ui.js';
+import { icon, hydrateIcons, escapeHTML, poster, handleImages, toast, creditsHTML } from './ui.js?v=6';
 const $ = id => document.getElementById(id);
 let categories = [], include = new Set(), exclude = new Set(), editMode = 'include';
 let game = null, pool = null, busy = false, sound = readLocal('sound',false), audioContext;
@@ -17,6 +17,7 @@ if (formValues) {
   include = new Set(formValues.include || []); exclude = new Set(formValues.exclude || []);
 }
 function showScreen(name) {
+  if(name!=='game' && $('reveal-popup').open)$('reveal-popup').close();
   ['setup','game','results'].forEach(s => $(s+'-screen').hidden = s !== name);
   document.body.dataset.screen = name;
 }
@@ -95,6 +96,7 @@ document.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',(
 }));
 function persistGame() {
   if(!game||!pool||game.phase==='finished')return;
+  game.viewScrollLeft=$('timeline-scroll').scrollLeft;
   if(!saveSession(game,pool)&&!storageWarning){storageWarning=true;toast('O navegador não permitiu salvar esta sessão. Mantenha a aba aberta para continuar.');}
 }
 function prefetchMovies() {
@@ -106,29 +108,51 @@ function prefetchMovies() {
   });
 }
 window.addEventListener('pagehide',persistGame);
-$('setup-form').addEventListener('submit',async e=>{
-  e.preventDefault();if(busy)return;
-  showError('setup-error');busy=true;$('start-button').classList.add('loading');$('start-button').disabled=true;
+function applySettingsToForm(s) {
+  $('films-infinite').checked=s.films===null;$('lives-infinite').checked=s.lives===null;
+  if(s.films!==null)$('films-input').value=s.films;
+  if(s.lives!==null)$('lives-input').value=s.lives;
+  include=new Set(s.include);exclude=new Set(s.exclude);renderCategories();updateSetup();
+}
+function setStarting(value,fromResults) {
+  for(const id of (fromResults?['play-again','new-game','review-timeline']:['start-button','resume-button']))$(id).disabled=value;
+  const button=$(fromResults?'play-again':'start-button');
+  button.classList.toggle('loading',value);button.setAttribute('aria-busy',String(value));
+}
+async function startSession(previousSettings=null,previousCategories=null) {
+  if(busy)return;
+  const fromResults=!!previousSettings,errorId=fromResults?'results-error':'setup-error';
+  busy=true;setStarting(true,fromResults);showError(errorId);
   try {
-    const s=settings();const active=categories.filter(c=>c.enabled);const base=proxyURL();
-    const newPool=new MoviePool(s,active,base);
+    const s=previousSettings?settingsFrom(previousSettings):settings();
+    const newPool=new MoviePool(s,previousCategories||categories.filter(c=>c.enabled),proxyURL());
     await newPool.prepare();
-    const baseMovie=await newPool.next(false), current=await newPool.next(false);
-    if(!baseMovie||!current)throw new Error('Não encontramos dois filmes válidos com esses filtros. Experimente outras categorias.');
-    pool=newPool;game=makeGame(s,baseMovie,current);showScreen('game');lastRange='';renderGame();persistGame();
-    $('candidate').focus({preventScroll:true});prefetchMovies();
-  } catch(error){showError('setup-error',error.message);}
-  finally{busy=false;$('start-button').classList.remove('loading');$('start-button').disabled=false;}
-});
+    const baseMovie=await newPool.next(false),current=await newPool.next(false);
+    if(!baseMovie||!current)throw new Error('N\u00e3o encontramos dois filmes v\u00e1lidos com esses filtros. Escolha outras categorias.');
+    // Do not discard the previous result until a new playable session is ready.
+    pool=newPool;game=makeGame(s,baseMovie,current);game.viewScrollLeft=0;
+    showScreen('game');lastRange='';$('timeline-scroll').scrollLeft=0;renderGame();
+    $('timeline-scroll').scrollLeft=Math.max(0,(geometry.width-$('timeline-scroll').clientWidth)/2);
+    applySettingsToForm(s);persistGame();$('candidate').focus({preventScroll:true});prefetchMovies();
+  }catch(error){showError(errorId,error.message);}
+  finally{busy=false;setStarting(false,fromResults);}
+}
+$('setup-form').addEventListener('submit',e=>{e.preventDefault();startSession();});
 $('resume-button').hidden=!saved;
 $('resume-button').addEventListener('click',()=>{
-  try {
-    saved=loadSession();if(!saved)throw new Error('A sessão salva expirou ou não está disponível.');
-    game=saved.game;pool=MoviePool.restore(saved.pool);showScreen('game');lastRange='';renderGame();prefetchMovies();
-  } catch(error){showError('setup-error',error.message);removeLocal('session');$('resume-button').hidden=true;}
+  if(busy)return;
+  try{
+    saved=loadSession();if(!saved)throw new Error('A sess\u00e3o salva n\u00e3o est\u00e1 dispon\u00edvel.');
+    game=saved.game;pool=MoviePool.restore(saved.pool);
+    const oldPosition=Number.isFinite(game.viewScrollLeft)?Math.max(0,game.viewScrollLeft):0;
+    showScreen('game');lastRange='';$('timeline-scroll').scrollLeft=0;renderGame();
+    $('timeline-scroll').scrollLeft=oldPosition;renderTimeline(true);
+    if(game.phase==='revealed')openReveal();else $('candidate').focus({preventScroll:true});
+    prefetchMovies();
+  }catch(error){showError('setup-error',error.message);removeLocal('session');$('resume-button').hidden=true;showScreen('setup');}
 });
 function timelineGeometry() {
-  const viewport=$('timeline-scroll'), style=getComputedStyle(document.documentElement);
+  const viewport=$('timeline-scroll'), style=getComputedStyle(viewport);
   const card=parseInt(style.getPropertyValue('--card-width')), slot=parseInt(style.getPropertyValue('--slot-width'));
   const content=game.timeline.length*(card+slot)+slot+40;
   const width=Math.max(viewport.clientWidth,content);
@@ -151,11 +175,11 @@ function renderTimeline(force=false) {
   let html='';
   for(let i=first;i<=last;i++){
     const selected=game.phase==='placing'&&game.slot===i;
-    const slotContent=selected?`${poster(game.current,'slot-movie-poster')}<span class="slot-question">?</span><div class="slot-movie-title">${escapeHTML(game.current.title)}</div>`:'<b>+</b><small>COLOQUE<br>AQUI</small>';
+    const slotContent=selected?`${poster(game.current,'slot-movie-poster')}<span class="slot-question">?</span><div class="slot-movie-title">${escapeHTML(game.current.title)}</div>`:'<b aria-hidden="true">+</b>';
     html+=`<div class="timeline-slot ${selected?'selected':''}" data-slot="${i}" style="left:${offset+i*stride}px"><button class="slot-button" ${selected?'data-current="true"':''} ${game.phase!=='placing'?'disabled':''} aria-label="${escapeHTML(slotLabel(i))}${selected?', posição selecionada':''}">${slotContent}</button></div>`;
     if(i<game.timeline.length){
       const m=game.timeline[i],justPlaced=game.reveal?.correct&&m.instance===`turn-${game.attempted}`;
-      html+=`<div class="timeline-unit" data-instance="${escapeHTML(m.instance)}" style="left:${offset+slot+i*stride}px"><article class="movie-card ${justPlaced?'new-card':''}">${poster(m)}${m.instance==='base'?'<span class="base-label">FILME-BASE</span>':''}<div class="card-year">${m.year}</div><div class="card-title">${escapeHTML(m.title)}</div></article><span class="timeline-dot"></span></div>`;
+      html+=`<div class="timeline-unit" data-instance="${escapeHTML(m.instance)}" style="left:${offset+slot+i*stride}px"><article class="movie-card ${justPlaced?'new-card':''}">${poster(m)}${m.instance==='base'?'<span class="base-label">BASE</span>':''}<div class="card-year">${m.year}</div><div class="card-title" title="${escapeHTML(m.title)}">${escapeHTML(m.title)}</div></article><span class="timeline-dot"></span></div>`;
     }
   }
   $('timeline-track').innerHTML=html;handleImages($('timeline-track'));
@@ -163,40 +187,55 @@ function renderTimeline(force=false) {
 }
 function renderCandidate() {
   const revealed=game.phase!=='placing',m=game.current;
-  $('candidate').innerHTML=`${poster(m)}<div class="candidate-copy"><small>${revealed?'ANO REVELADO':'SEU FILME'}</small>${escapeHTML(m.title)}<span class="candidate-year">${revealed?m.year:'?'}</span></div>`;
-  $('candidate').setAttribute('aria-label',revealed?`${m.title}, ${m.year}`:`${m.title}. Arraste para a linha ou use as setas para escolher a posição.`);
+  $('candidate').innerHTML=`${poster(m)}<div class="candidate-copy"><small>FILME DA VEZ</small><h3 title="${escapeHTML(m.title)}">${escapeHTML(m.title)}</h3><span class="candidate-year">${revealed?m.year:'?'}</span></div><span class="candidate-grip" aria-hidden="true">${icon('grip')}</span>`;
+  $('candidate').setAttribute('aria-label',revealed?`${m.title}, ${m.year}`:`${m.title}. Arraste para a linha ou use as setas para escolher a posi\u00e7\u00e3o.`);
   $('candidate').setAttribute('aria-disabled',String(revealed));handleImages($('candidate'));
 }
 function renderStats() {
-  $('stat-progress').textContent=`${game.attempted} / ${game.settings.films===null?'∞':game.settings.films}`;
-  $('stat-score').textContent=game.correct;
-  $('stat-lives').textContent=`♥ ${game.lives===null?'∞':game.lives}`;
-  $('round-label').textContent=`SESSÃO TMDB${pool.cycle>1?' · CICLO '+pool.cycle:''}`;
-  $('progress-fill').style.width=game.settings.films===null?'0%':Math.min(100,100*game.attempted/game.settings.films)+'%';
+  $('stat-progress').textContent=`${game.attempted} / ${game.settings.films===null?'\u221e':game.settings.films}`;
+  $('stat-score').textContent=game.correct;$('stat-lives').textContent=game.lives===null?'\u221e':game.lives;
+  $('round-label').textContent=`${game.attempted} filmes respondidos${pool.cycle>1?' \u00b7 Ciclo '+pool.cycle:''}`;
+  for(const id of ['stat-progress','stat-score','stat-lives'])$(id).title=$(id).textContent;
+  const infinite=game.settings.films===null;document.querySelector('.progress-rail').hidden=infinite;
+  $('progress-fill').style.width=infinite?'0%':Math.min(100,100*game.attempted/game.settings.films)+'%';
 }
 function renderGame() {
   renderStats();renderTimeline(true);renderCandidate();showError('game-error');
-  const revealed=game.phase!=='placing',correct=game.reveal?.correct;
-  $('turn-panel').className=`turn-panel ${revealed?'revealed '+(correct?'correct':'wrong'):''}`;
+  const revealed=game.phase!=='placing';$('turn-panel').className=`turn-panel${revealed?' revealed':''}`;
   $('confirm-button').hidden=revealed;$('confirm-button').disabled=game.slot===null;
-  $('next-button').hidden=!revealed;$('next-button').disabled=false;
-  document.querySelector('.position-buttons').hidden=revealed;
-  if(!revealed){
-    $('turn-eyebrow').textContent='EM QUE ANO ESSA HISTÓRIA COMEÇOU?';$('turn-title').textContent='Onde esse filme se encaixa?';
-    $('turn-instruction').innerHTML='Arraste o cartaz para um espaço da linha do tempo.<br>O ano só aparece depois de confirmar.';
-    $('placement-label').textContent=game.slot===null?'Escolha uma posição acima':slotLabel(game.slot);
-    $('turn-small-note').textContent='Pode mudar de ideia antes de confirmar.';
-  }else{
-    $('turn-eyebrow').textContent=correct?'LUZES PARA VOCÊ!':'CORTA! NÃO FOI DESSA VEZ.';
-    $('turn-title').textContent=correct?`Acertou! É de ${game.current.year}.`:`Esse filme é de ${game.current.year}.`;
-    $('turn-instruction').textContent=correct?'Mais um clássico no lugar certo. Seu filme agora faz parte da linha do tempo.':
-      game.lives===null?'O filme foi descartado. No modo de vidas infinitas, a sessão continua.':'Você perdeu uma vida. O filme foi descartado, mas a sua linha continua intacta.';
-    $('placement-label').textContent=correct?(game.streak>1?`${game.streak} acertos seguidos. Que sequência!`:'Muito bem. Pode chamar o próximo!'):'Posição correta: '+slotLabel(game.reveal.insertion);
-    $('next-button').innerHTML=`${game.endReason?'Ver resultado':'Próximo filme'}${icon('arrow-right')}`;
-    $('turn-small-note').textContent=game.endReason?'Sua sessão chegou ao fim.':'Sem pressa. Quando estiver pronto, avance.';
-    $('live-region').textContent=$('turn-title').textContent+' '+$('turn-instruction').textContent;
-  }
+  $('review-answer').hidden=!revealed;document.querySelector('.position-buttons').hidden=revealed;
+  $('placement-label').textContent=game.slot===null?'Escolha uma posi\u00e7\u00e3o na linha.':slotLabel(game.slot);
+  if(!revealed&&$('reveal-popup').open)$('reveal-popup').close();
 }
+function nextButtonLabel(label=null) {
+  $('popup-next-button').innerHTML=icon('ticket')+`<span>${label||(game?.endReason?'Ver resultado':'Pr\u00f3ximo filme')}</span>`+icon('arrow-right');
+}
+function openReveal() {
+  if(!game||game.phase!=='revealed'||busy)return;
+  const correct=game.reveal.correct,m=game.reveal.movie,popup=$('reveal-popup');
+  popup.classList.toggle('is-correct',correct);popup.classList.toggle('is-wrong',!correct);
+  $('reveal-title').textContent=correct?'Acertou!':'Errou!';$('reveal-status').innerHTML=icon(correct?'check':'close');
+  $('reveal-film-name').textContent=m.title;$('reveal-film-year').textContent=m.year;
+  $('reveal-film-year').setAttribute('aria-label','Ano correto: '+m.year);
+  $('reveal-detail').textContent=correct?(game.streak>1?game.streak+' acertos seguidos':'Na ordem certa!'):(game.lives===null?'Sua linha continua intacta.':'\u2212 1 vida');
+  showError('reveal-error');nextButtonLabel();$('popup-next-button').disabled=false;$('reveal-close').disabled=false;
+  if(!popup.open)popup.showModal();$('popup-next-button').focus({preventScroll:true});
+}
+$('review-answer').addEventListener('click',openReveal);
+$('reveal-close').addEventListener('click',()=>{if(!busy)$('reveal-popup').close();});
+$('reveal-popup').addEventListener('cancel',e=>{if(busy)e.preventDefault();});
+$('reveal-popup').addEventListener('keydown',e=>{
+  if(e.key!=='Tab')return;
+  const items=[...e.currentTarget.querySelectorAll('button:not(:disabled)')].filter(el=>el.getClientRects().length);
+  if(!items.length){e.preventDefault();return;}
+  const first=items[0],last=items[items.length-1],active=document.activeElement;
+  if(e.shiftKey&&(active===first||!e.currentTarget.contains(active))){e.preventDefault();last.focus({preventScroll:true});}
+  else if(!e.shiftKey&&active===last){e.preventDefault();first.focus({preventScroll:true});}
+});
+
+$('reveal-popup').addEventListener('close',()=>{
+  if(document.body.dataset.screen==='game'&&game?.phase==='revealed')$('review-answer').focus({preventScroll:true});
+});
 function selectSlot(index,scroll=false) {
   if(!game||game.phase!=='placing'||busy)return;
   game.slot=Math.max(0,Math.min(game.timeline.length,index));
@@ -228,7 +267,7 @@ $('timeline-scroll').addEventListener('wheel',e=>{
   const delta=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:e.deltaY;
   if(delta){e.preventDefault();v.scrollLeft+=delta*(e.deltaMode===1?24:e.deltaMode===2?v.clientWidth:1);}
 },{passive:false});
-$('timeline-scroll').addEventListener('scroll',()=>requestAnimationFrame(()=>{renderTimeline();if(drag?.active)updateDragHover(drag.x,drag.y);}));
+$('timeline-scroll').addEventListener('scroll',()=>requestAnimationFrame(()=>{if(game)game.viewScrollLeft=$('timeline-scroll').scrollLeft;renderTimeline();if(drag?.active)updateDragHover(drag.x,drag.y);}));
 $('scroll-left').addEventListener('click',()=>$('timeline-scroll').scrollBy({left:-$('timeline-scroll').clientWidth*.65,behavior:'smooth'}));
 $('scroll-right').addEventListener('click',()=>$('timeline-scroll').scrollBy({left:$('timeline-scroll').clientWidth*.65,behavior:'smooth'}));
 new ResizeObserver(()=>{lastRange='';renderTimeline(true);}).observe($('timeline-scroll'));
@@ -250,7 +289,8 @@ document.addEventListener('pointerdown',e=>{
 document.addEventListener('pointermove',e=>{
   if(!drag||e.pointerId!==drag.id)return;drag.x=e.clientX;drag.y=e.clientY;
   if(!drag.active&&Math.hypot(e.clientX-drag.startX,e.clientY-drag.startY)<7)return;
-  e.preventDefault();
+  // touch-action:none already prevents pan on drag handles; do not suppress the next tap.
+  if(e.pointerType!=='touch')e.preventDefault();
   if(!drag.active){
     drag.active=true;suppressClick=true;$('candidate').classList.add('dragging');
     const ghost=document.createElement('div');ghost.className='drag-ghost';ghost.innerHTML=`${poster(game.current)}<div class="card-title">${escapeHTML(game.current.title)}</div>`;document.body.appendChild(ghost);handleImages(ghost);drag.ghost=ghost;
@@ -268,39 +308,72 @@ function endDrag(e,cancel=false){
 document.addEventListener('pointerup',e=>endDrag(e));document.addEventListener('pointercancel',e=>endDrag(e,true));
 $('confirm-button').addEventListener('click',()=>{
   if(busy||!game||game.phase!=='placing'||game.slot===null)return;
-  const correct=confirmMovie(game);beep(correct);renderGame();persistGame();$('next-button').focus({preventScroll:true});
+  const correct=confirmMovie(game);beep(correct);renderGame();persistGame();openReveal();
 });
-$('next-button').addEventListener('click',async()=>{
+// A quick tap immediately after a drag can lose its compatibility click on touch devices.
+// Activate on a stationary touch release; the phase guard prevents duplicate confirmations.
+let confirmTouch=null;
+$('confirm-button').addEventListener('pointerdown',e=>{
+  if(e.pointerType==='touch')confirmTouch={id:e.pointerId,x:e.clientX,y:e.clientY};
+});
+$('confirm-button').addEventListener('pointercancel',()=>{confirmTouch=null;});
+$('confirm-button').addEventListener('pointerup',e=>{
+  const t=confirmTouch;confirmTouch=null;
+  if(e.pointerType!=='touch'||!t||t.id!==e.pointerId||Math.hypot(e.clientX-t.x,e.clientY-t.y)>10)return;
+  const r=e.currentTarget.getBoundingClientRect();
+  if(e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom){
+    e.preventDefault();e.currentTarget.click();
+  }
+});
+async function goToNextMovie(){
   if(busy||!game||game.phase!=='revealed')return;
   if(game.endReason){showResults(game.endReason);return;}
-  busy=true;$('next-button').disabled=true;showError('game-error');
-  const activeGame=game, activePool=pool, previousCycle=pool.cycle;
+  busy=true;$('popup-next-button').disabled=true;$('reveal-close').disabled=true;
+  $('popup-next-button').setAttribute('aria-busy','true');showError('reveal-error');nextButtonLabel('Carregando...');
+  const activeGame=game,activePool=pool,previousCycle=pool.cycle;
   try{
     const next=await activePool.next();
-    if(game!==activeGame || activeGame.phase==='finished')return;
+    if(game!==activeGame||activeGame.phase==='finished')return;
     if(!next){showResults('exhausted');return;}
     advanceMovie(game,next);renderGame();persistGame();
-    if(pool.cycle>previousCycle)toast('Novo ciclo! Você percorreu o catálogo acessível nestes filtros. Os filmes agora podem se repetir.');
+    if(pool.cycle>previousCycle)toast('Novo ciclo. Os filmes podem se repetir.');
     $('candidate').focus({preventScroll:true});prefetchMovies();
-  }catch(error){if(game===activeGame && activeGame.phase!=='finished'){showError('game-error',error.message+' Clique em Próximo filme para tentar novamente.');persistGame();}}
-  finally{busy=false;$('next-button').disabled=false;}
-});
+  }catch(error){
+    if(game===activeGame&&activeGame.phase!=='finished'){
+      showError('reveal-error',error.message);nextButtonLabel('Tentar novamente');persistGame();
+    }
+  }finally{
+    busy=false;$('popup-next-button').disabled=false;$('reveal-close').disabled=false;$('popup-next-button').setAttribute('aria-busy','false');
+  }
+}
+$('popup-next-button').addEventListener('click',goToNextMovie);
 $('end-button').addEventListener('click',()=>{
-  modal('<h2>Fechar a cortina?</h2><p>Você pode encerrar agora e ver seu resultado. A tentativa atual só conta se já foi confirmada.</p><div class="dialog-actions"><button class="outline-button" id="keep-playing">Continuar jogando</button><button class="primary-button" id="confirm-end">Encerrar sessão</button></div>');
+  if(busy||!game)return;
+  modal('<h2>Encerrar sess\u00e3o?</h2><div class="dialog-actions"><button class="outline-button" id="keep-playing">Continuar</button><button class="primary-button" id="confirm-end">Encerrar</button></div>');
   $('keep-playing').addEventListener('click',()=>$('info-dialog').close());
   $('confirm-end').addEventListener('click',()=>{$('info-dialog').close();showResults(game.endReason||'manual');});
 });
 function showResults(reason){
-  finishGame(game,reason);removeLocal('session');saved=null;$('resume-button').hidden=true;showScreen('results');
-  const copy={completed:['Sessão completa!','Você chegou ao último filme. Pode aplaudir!'],lives:['Corta! Por hoje é só.','As vidas acabaram, mas sempre existe uma próxima sessão.'],manual:['Foi uma boa sessão.','Sua sessão foi encerrada. O cinema continua por aqui.'],exhausted:['Você zerou o catálogo!','Os filmes disponíveis nestes filtros acabaram antes da meta. Amplie as categorias ou use o modo infinito.']};
+  finishGame(game,reason);removeLocal('session');saved=null;$('resume-button').hidden=true;showScreen('results');showError('results-error');
+  const copy={completed:['Sess\u00e3o completa!',''],lives:['Fim das vidas',''],manual:['Sess\u00e3o encerrada',''],exhausted:['Fim do cat\u00e1logo','Todos os filmes dispon\u00edveis nestes filtros foram usados.']};
   const [title,description]=copy[reason]||copy.manual;
-  $('results-title').textContent=title;$('results-description').textContent=description;
-  $('results-score').textContent=game.correct;$('results-accuracy').textContent=game.attempted?Math.round(100*game.correct/game.attempted)+'%':'—';
-  $('results-streak').textContent=game.bestStreak;
-  $('results-detail').textContent=`${game.attempted} filme(s) respondido(s) · ${game.attempted-game.correct} erro(s) · ${game.timeline.length} filme(s) na linha, incluindo o filme-base.`;
+  $('results-title').textContent=title;$('results-description').textContent=description;$('results-description').hidden=!description;
+  $('results-score').textContent=game.correct;$('results-accuracy').textContent=game.attempted?Math.round(100*game.correct/game.attempted)+'%':'\u2014';
+  $('results-streak').textContent=game.bestStreak;$('results-detail').textContent=`${game.attempted} filme${game.attempted===1?'':'s'} \u00b7 ${game.attempted-game.correct} erro${game.attempted-game.correct===1?'':'s'}`;
+  $('play-again').focus({preventScroll:true});
 }
-$('play-again').addEventListener('click',()=>{game=null;pool=null;showScreen('setup');showError('setup-error');});
-$('review-timeline').addEventListener('click',()=>modal(`<h2>Sua história em filmes</h2><p>${game.timeline.length} filmes na ordem, incluindo o filme-base.</p><div class="review-list">${game.timeline.map(m=>`<div><b>${m.year}</b><span>${escapeHTML(m.title)}</span></div>`).join('')}</div>`));
+$('play-again').addEventListener('click',()=>{
+  if(!busy&&game)startSession(structuredClone(game.settings),structuredClone(pool.categories));
+});
+$('new-game').addEventListener('click',()=>{
+  if(busy)return;
+  game=null;pool=null;removeLocal('session');saved=null;$('resume-button').hidden=true;
+  showScreen('setup');showError('setup-error');showError('game-error');$('start-button').focus({preventScroll:true});
+});
+$('review-timeline').addEventListener('click',()=>{
+  if(busy||!game)return;
+  modal(`<h2>Sua linha do tempo</h2><div class="review-list">${game.timeline.map(m=>`<div><b>${m.year}</b><span>${escapeHTML(m.title)}</span></div>`).join('')}</div>`);
+});
 async function initialize(){
   $('start-button').disabled=true;
   try{
