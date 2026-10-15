@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "categories": [
     {
       "id": "genre-28",
@@ -245,8 +245,8 @@
       "sort_order": 32
     },
     {
-      "id": "oscar-picture",
-      "label": "Oscar: Melhor Filme",
+      "id": "oscar-winners",
+      "label": "Vencedores do Oscar",
       "kind": "curated",
       "tmdb_ids": [
         238,
@@ -255,11 +255,48 @@
         98,
         122,
         496243,
-        872585
+        872585,
+        27205,
+        603,
+        157336,
+        329,
+        155,
+        76341,
+        438631,
+        545611,
+        313369,
+        244786,
+        19995,
+        354912,
+        10193,
+        324857,
+        129
       ],
-      "description": "Seleção inicial de 7 vencedores de Melhor Filme. Lista editorial, não exaustiva; editável no painel.",
+      "description": "Seleção de filmes famosos que venceram pelo menos um Oscar, em qualquer categoria. Não limitada a Melhor Filme.",
+      "enabled": true,
+      "sort_order": 35
+    },
+    {
+      "id": "dreamworks",
+      "label": "DreamWorks",
+      "kind": "company",
+      "tmdb_ids": [
+        521
+      ],
+      "description": "Filmes creditados à DreamWorks Animation.",
       "enabled": true,
       "sort_order": 33
+    },
+    {
+      "id": "ghibli",
+      "label": "Studio Ghibli",
+      "kind": "company",
+      "tmdb_ids": [
+        10342
+      ],
+      "description": "Filmes creditados ao Studio Ghibli.",
+      "enabled": true,
+      "sort_order": 34
     }
   ]
 }

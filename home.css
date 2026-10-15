@@ -416,3 +416,80 @@ body[data-screen="setup"] .brand-logo-image{
 @media(max-height:520px) and (orientation:landscape){
   body[data-screen="setup"] .brand-logo-image{width:94px;max-height:42px}
 }
+
+/* v13 — approved logo PNG only; no extra box, border or background around it. */
+body[data-screen="setup"] .brand-logo-link{
+  display:flex;align-items:center;justify-content:flex-start;width:auto;height:100%;padding:0!important;margin:0;
+  background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0;text-decoration:none;overflow:visible;
+}
+body[data-screen="setup"] .brand-logo-image{
+  display:block;width:168px;height:auto;max-height:62px;object-fit:contain;
+  background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;
+  filter:drop-shadow(0 5px 8px #14030a45);
+}
+
+/* v13 — usable landscape-phone setup. Keep the full game in the first fold. */
+@media (orientation:landscape) and (max-height:520px) and (max-width:950px){
+ body[data-screen="setup"] .app-shell{padding-inline:12px!important}
+ body[data-screen="setup"] .site-header{height:38px!important;flex-basis:38px!important;padding:0!important}
+ body[data-screen="setup"] .site-footer{height:18px!important;flex-basis:18px!important;padding:0!important}
+ body[data-screen="setup"] .brand-logo-image{width:102px!important;max-height:34px!important}
+ body[data-screen="setup"] .header-actions{gap:5px}
+ body[data-screen="setup"] .header-actions .icon-button{width:29px;height:29px}
+ body[data-screen="setup"] .header-actions .icon{width:15px;height:15px}
+ body[data-screen="setup"] .site-footer .footer-brand{font-size:6px!important}
+ body[data-screen="setup"] .credits-trigger{font-size:7px!important}
+
+ #setup-screen:not([hidden]){height:100%!important;min-height:0!important;padding:3px 0!important;display:block!important}
+ #setup-screen .intro{display:none!important}
+ #setup-screen .setup-ticket{
+   width:100%!important;max-width:none!important;height:100%!important;max-height:100%!important;min-height:0!important;
+   padding:7px 15px 6px!important;margin:0!important;border-width:7px!important;border-radius:14px!important;overflow:hidden!important;
+ }
+ #setup-screen .setup-ticket:before{inset:-6px!important}
+ #setup-screen .ticket-heading{height:29px!important;margin:0 0 3px!important;display:flex!important;align-items:center!important;justify-content:center!important}
+ #setup-screen .ticket-heading h1{font-size:23px!important;line-height:1!important;padding-inline:15px!important;margin:0!important}
+ #setup-screen .ticket-heading h1 i{font-size:.24em!important}
+ #setup-screen .heading-rule{display:none!important}
+ #setup-screen #setup-form{
+   height:calc(100% - 32px)!important;min-height:0!important;display:grid!important;
+   grid-template-columns:minmax(260px,.9fr) minmax(0,1.45fr)!important;
+   grid-template-rows:auto minmax(0,1fr) auto!important;column-gap:18px!important;row-gap:4px!important;align-items:stretch!important;
+ }
+ #setup-screen .counters{
+   grid-column:1!important;grid-row:1 / span 2!important;display:grid!important;grid-template-columns:1fr 1fr!important;
+   gap:9px!important;margin:0!important;align-self:start!important;padding-top:4px!important;
+ }
+ #setup-screen .counter{padding:0!important;margin:0!important;border:0!important}
+ #setup-screen .counter+ .counter:before{display:none!important}
+ #setup-screen .counter legend{font-size:10px!important;margin:0 0 3px!important;gap:5px!important}
+ #setup-screen .counter legend .icon{width:17px!important;height:17px!important}
+ #setup-screen .quantity-bar{min-height:31px!important;gap:5px!important}
+ #setup-screen .stepper{height:31px!important;gap:4px!important}
+ #setup-screen .stepper button{width:31px!important;height:31px!important;border-radius:7px!important;font-size:17px!important}
+ #setup-screen .stepper input{height:31px!important;font-size:16px!important}
+ #setup-screen .infinity-button{width:34px!important;height:31px!important;min-height:31px!important;border-radius:7px!important;font-size:20px!important}
+ #setup-screen .ticket-cutline{grid-column:1!important;grid-row:3!important;margin:2px 0 0!important;height:1px!important;align-self:start!important}
+ #setup-screen .ticket-cutline span{display:none!important}
+
+ #setup-screen .category-legend{grid-column:2!important;grid-row:1!important;min-height:18px!important;margin:0!important;justify-content:flex-end!important;gap:8px!important;font-size:7px!important}
+ #setup-screen .category-legend .plain-button{font-size:7px!important;padding:0 3px!important}
+ #setup-screen .category-area{
+   grid-column:2!important;grid-row:2!important;max-height:none!important;min-height:0!important;height:100%!important;overflow:auto!important;padding:0 3px 0 0!important;
+ }
+ #setup-screen .category-groups{gap:5px!important}
+ #setup-screen .category-group-title{font-size:7px!important;letter-spacing:1px!important;margin:0 0 3px!important;gap:5px!important}
+ #setup-screen .category-group-title .icon{width:12px!important;height:12px!important}
+ #setup-screen .category-chips{gap:4px!important}
+ #setup-screen .category-chip{min-height:23px!important;padding:3px 7px!important;border-radius:8px!important;font-size:8px!important;gap:4px!important}
+ #setup-screen .category-chip .chip-state{width:14px!important;height:14px!important}
+ #setup-screen .category-chip .chip-state .icon{width:9px!important;height:9px!important}
+ #setup-screen .ticket-divider{display:none!important}
+ #setup-screen .start-button{
+   grid-column:2!important;grid-row:3!important;align-self:end!important;min-height:35px!important;height:35px!important;
+   margin:0!important;padding:5px 26px!important;font-size:15px!important;letter-spacing:.8px!important;
+ }
+ #setup-screen .start-button .icon{width:16px!important;height:16px!important}
+ #setup-screen #setup-error{position:absolute;left:15px;right:15px;bottom:6px;font-size:8px!important}
+ #setup-screen .resume-button{right:16px!important;top:5px!important;font-size:8px!important}
+}

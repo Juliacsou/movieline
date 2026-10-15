@@ -711,3 +711,107 @@ body[data-screen="game"] #game-screen .end-session{top:72px!important}
  body:is([data-screen="game"],[data-screen="results"]) .header-actions{gap:4px}
  body:is([data-screen="game"],[data-screen="results"]) .header-actions .icon-button{width:29px;height:29px}
 }
+
+/* v13 — approved logo PNG only; no surrounding CSS box. */
+body:is([data-screen="game"],[data-screen="results"]) .brand-logo-link{
+  display:flex;align-items:center;justify-content:flex-start;width:auto;height:100%;padding:0!important;margin:0;
+  background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0;text-decoration:none;overflow:visible;
+}
+body:is([data-screen="game"],[data-screen="results"]) .brand-logo-image{
+  display:block;width:152px;height:auto;max-height:58px;object-fit:contain;
+  background:transparent!important;border:0!important;border-radius:0!important;padding:0!important;box-shadow:none!important;
+  filter:drop-shadow(0 5px 8px #14030a48);
+}
+
+/* v13 — landscape phones: rebuild the game around the short viewport instead of shrinking portrait rules. */
+@media (orientation:landscape) and (max-height:520px) and (max-width:950px){
+ body:is([data-screen="game"],[data-screen="results"]) .app-shell{padding-inline:10px!important}
+ body:is([data-screen="game"],[data-screen="results"]) .site-header{height:38px!important;flex-basis:38px!important;padding:0!important}
+ body:is([data-screen="game"],[data-screen="results"]) .site-footer{height:18px!important;flex-basis:18px!important;padding:0!important}
+ body:is([data-screen="game"],[data-screen="results"]) .brand-logo-image{width:98px!important;max-height:34px!important}
+ body:is([data-screen="game"],[data-screen="results"]) .header-actions{gap:4px}
+ body:is([data-screen="game"],[data-screen="results"]) .header-actions .icon-button{width:28px;height:28px}
+ body:is([data-screen="game"],[data-screen="results"]) .header-actions .icon{width:14px;height:14px}
+ body:is([data-screen="game"],[data-screen="results"]) .site-footer .footer-brand{font-size:6px!important}
+ body:is([data-screen="game"],[data-screen="results"]) .credits-trigger{font-size:7px!important}
+
+ #game-screen:not([hidden]){
+   --card-width:94px!important;--slot-width:111px!important;--card-h:122px!important;--year-h:18px!important;--title-h:26px!important;
+   --title-size:7px!important;--year-size:15px!important;--frame-width:4px!important;
+   height:100%!important;min-height:0!important;padding:3px 0 4px!important;display:grid!important;
+   grid-template-columns:minmax(0,1fr) 208px!important;grid-template-rows:minmax(0,1fr)!important;gap:8px!important;
+ }
+ body[data-screen="game"] #game-screen .game-topline{
+   position:fixed!important;top:3px!important;left:50%!important;right:auto!important;translate:-50% 0!important;
+   width:auto!important;height:32px!important;z-index:12!important;display:flex!important;align-items:center!important;justify-content:center!important;
+   padding:0!important;margin:0!important;pointer-events:none!important;
+ }
+ body[data-screen="game"] #game-screen .game-stats{
+   position:relative!important;left:auto!important;top:auto!important;translate:none!important;display:flex!important;
+   width:auto!important;max-width:none!important;height:31px!important;gap:7px!important;padding:4px 8px!important;border-width:5px!important;border-radius:10px!important;
+   pointer-events:auto!important;
+ }
+ body[data-screen="game"] #game-screen .game-stats:before{inset:-5px!important}
+ body[data-screen="game"] #game-screen .game-stats>.stat-item{gap:3px!important}
+ body[data-screen="game"] #game-screen .game-stats b{font-size:14px!important}
+ body[data-screen="game"] #game-screen .game-stats small{display:none!important}
+ body[data-screen="game"] #game-screen .game-stats>.stat-item .icon{width:11px!important;height:11px!important}
+ body[data-screen="game"] #game-screen .progress-rail{display:none!important}
+ body[data-screen="game"] #game-screen .end-session{position:fixed!important;right:10px!important;top:43px!important;width:28px!important;height:28px!important;z-index:13!important}
+
+ #game-screen .timeline-panel{grid-column:1!important;grid-row:1!important;height:100%!important;min-height:0!important;margin:0!important;border-radius:0!important;overflow:hidden!important}
+ #game-screen .timeline-heading{height:25px!important;min-height:25px!important;padding:2px 8px 4px!important}
+ #game-screen .timeline-heading h2{display:block!important;font-size:13px!important;line-height:1!important;letter-spacing:1px!important}
+ #game-screen .timeline-heading>span{font-size:7px!important}
+ #game-screen .film-perforations{height:7px!important;flex-basis:7px!important}
+ #game-screen .timeline-scroll{min-height:0!important;height:auto!important;flex:1 1 auto!important}
+ #game-screen .timeline-bottom{height:25px!important;flex-basis:25px!important;padding:0 7px!important;font-size:6px!important}
+ #game-screen .timeline-nav .icon-button{width:24px!important;height:22px!important}
+ #game-screen .movie-card{width:var(--card-width)!important;height:var(--card-h)!important}
+ #game-screen .card-title{font-size:var(--title-size)!important;padding:4px!important}
+ #game-screen .card-year{font-size:var(--year-size)!important}
+ #game-screen .timeline-slot{height:calc(var(--card-h) + 15px)!important}
+ #game-screen .timeline-slot.selected .slot-button{height:var(--card-h)!important;width:calc(var(--card-width) - 8px)!important}
+
+ #game-screen .turn-panel{
+   grid-column:2!important;grid-row:1!important;height:100%!important;min-height:0!important;padding:8px!important;gap:6px!important;
+   display:grid!important;grid-template-columns:1fr!important;grid-template-rows:minmax(0,1fr) auto!important;align-items:stretch!important;overflow:hidden!important;
+ }
+ #game-screen .turn-panel:before{font-size:10px!important;padding:2px 8px!important;top:0!important}
+ #game-screen .candidate{grid-column:1!important;grid-row:1!important;display:grid!important;grid-template-columns:52px minmax(0,1fr)!important;align-items:center!important;gap:7px!important;min-height:0!important;width:100%!important;height:100%!important;padding:8px 2px 2px!important;transform:none!important}
+ #game-screen .candidate .movie-poster{width:48px!important;height:72px!important;max-width:48px!important;max-height:72px!important;box-shadow:0 6px 12px #13030a50!important}
+ #game-screen .candidate-copy{min-width:0!important;padding:0!important;max-height:none!important}
+ #game-screen .candidate-copy small{font-size:6px!important;letter-spacing:.6px!important;margin:0 0 2px!important}
+ #game-screen .candidate-copy h3{font-size:15px!important;line-height:1.05!important;-webkit-line-clamp:3!important;margin:0!important}
+ #game-screen .candidate-copy .candidate-year{font-size:19px!important;margin-top:3px!important}
+ #game-screen .turn-copy{display:none!important}
+ #game-screen .turn-actions{grid-column:1!important;grid-row:2!important;display:block!important;width:100%!important;min-width:0!important}
+ #game-screen .turn-actions .ticket-action{width:100%!important;min-width:0!important;min-height:34px!important;height:34px!important;font-size:14px!important;padding:5px 20px!important;margin:0!important}
+ #game-screen .turn-actions>small{display:none!important}
+
+ #results-screen{height:100%!important;min-height:0!important;padding:3px 0!important}
+ #results-screen .results-ticket{width:min(620px,calc(100% - 18px))!important;max-height:100%!important;padding:9px 20px!important;border-width:7px!important;border-radius:13px!important;overflow:hidden!important}
+ #results-screen .results-ticket:before{inset:-6px!important}
+ #results-screen .eyebrow,#results-screen .results-emblem,#results-screen #results-description{display:none!important}
+ #results-screen .results-ticket h1{font-size:25px!important;line-height:1!important;margin:0!important}
+ #results-screen .results-rule{margin:3px auto 1px!important}
+ #results-screen .results-stats{margin:2px 0 3px!important;padding:1px 0!important}
+ #results-screen .results-stats b{font-size:23px!important}
+ #results-screen .results-stats small{font-size:6px!important;margin-top:2px!important}
+ #results-screen #results-detail{font-size:8px!important;line-height:1.1!important}
+ #results-screen .results-actions{grid-template-columns:1.12fr 1fr!important;margin-top:5px!important;gap:7px!important}
+ #results-screen .results-actions .ticket-action{height:34px!important;min-height:34px!important;font-size:14px!important;padding:4px 14px!important}
+ #results-screen #review-timeline{margin-top:3px!important;font-size:8px!important;padding:2px!important}
+
+ .reveal-popup{width:min(470px,calc(100vw - 24px))!important;max-height:calc(100dvh - 10px)!important;padding-top:14px!important}
+ .clapper-arm{height:25px!important}
+ .clapper-rail{height:7px!important;flex-basis:7px!important}
+ .reveal-popup-card{max-height:calc(100dvh - 54px)!important}
+ .reveal-popup-body{padding:16px 20px 12px!important;display:grid!important;grid-template-columns:minmax(0,1fr) 105px!important;gap:6px 12px!important;text-align:left!important}
+ .reveal-popup h2{font-size:24px!important;margin:0!important}
+ .reveal-film-name{font-size:14px!important;margin:0!important;padding:0!important;border:0!important}
+ .reveal-film-year{font-size:42px!important;margin:0!important;align-self:center!important}
+ .reveal-detail{display:none!important}
+ .reveal-popup .ticket-next-button{grid-column:1/-1!important;min-height:36px!important;height:36px!important;font-size:17px!important;margin:0!important;padding:6px 26px!important}
+ .reveal-close{width:24px!important;height:24px!important;top:3px!important;right:3px!important}
+}
