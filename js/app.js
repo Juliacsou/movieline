@@ -2,9 +2,9 @@ import { CONFIG } from '../config.js?v=6';
 import { settingsFrom, makeGame, confirmMovie, advanceMovie, finishGame } from './engine.js';
 import { loadCategories, proxyURL, MoviePool } from './api.js';
 import { readLocal, writeLocal, removeLocal, saveSession, loadSession } from './storage.js';
-import { icon, hydrateIcons, escapeHTML, poster, handleImages, toast, creditsHTML } from './ui.js?v=6';
+import { icon, hydrateIcons, escapeHTML, poster, handleImages, toast, creditsHTML } from './ui.js?v=10';
 const $ = id => document.getElementById(id);
-let categories = [], include = new Set(), exclude = new Set(), editMode = 'include';
+let categories = [], include = new Set(), exclude = new Set();
 let game = null, pool = null, busy = false, sound = readLocal('sound',false), audioContext;
 let saved = loadSession(), lastRange = '', drag = null, hoverSlot = null, suppressClick = false;
 let geometry = {offset:20,card:146,slot:116,width:0,stride:262};
@@ -25,7 +25,7 @@ function showError(id, message = '') { $(id).textContent = message; $(id).hidden
 function modal(html) { $('dialog-content').innerHTML = html; hydrateIcons($('info-dialog')); $('info-dialog').showModal(); }
 $('info-dialog').querySelector('.dialog-close').addEventListener('click', () => $('info-dialog').close());
 $('info-dialog').addEventListener('click', e => { if (e.target === $('info-dialog')) { const r = e.target.getBoundingClientRect(); if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close(); } });
-$('help-button').addEventListener('click', () => modal(`<h2>Um filme de cada vez.</h2><div class="help-step"><b>1</b><p><strong>Monte sua sessão.</strong> Escolha filmes, vidas e categorias. Em Incluir, você combina opções; em Excluir, remove o que não quer.</p></div><div class="help-step"><b>2</b><p><strong>Encontre o lugar do filme.</strong> Um filme-base já aparece com seu ano. Arraste o novo cartaz para antes, depois ou entre filmes. Também vale tocar nos botões + da linha.</p></div><div class="help-step"><b>3</b><p><strong>Confirme e descubra.</strong> Acertou? O filme fica na linha. Errou? Perde uma vida e o filme é descartado. Depois, avance para o próximo.</p></div><p class="modal-note"><strong>Mesmo ano? Sem pegadinha.</strong> Qualquer posição que mantenha os anos em ordem é aceita. A regra usa o ano da data principal de lançamento do TMDB, sem filtro regional do Brasil.</p><p><strong>Catálogo:</strong> O Movieline seleciona automaticamente filmes conhecidos, com pelo menos 1.000 votos no TMDB. É um critério aproximado de reconhecimento. O filme-base não conta na meta. Cada tentativa conta como um filme, acertando ou errando. Sem limite de filmes, o catálogo é reembaralhado apenas quando o ciclo se esgota. Você pode encerrar a qualquer momento.</p><p><strong>Teclado:</strong> Tab navega; Enter ativa botões; escolha um botão + com Tab e ative com Enter. A roda do mouse e dois dedos percorrem a linha horizontal.</p>`));
+$('help-button').addEventListener('click', () => modal(`<h2>Um filme de cada vez.</h2><div class="help-step"><b>1</b><p><strong>Monte sua sessão.</strong> Escolha filmes, vidas e categorias. Em cada categoria: primeiro toque inclui, o segundo exclui e o terceiro limpa.</p></div><div class="help-step"><b>2</b><p><strong>Encontre o lugar do filme.</strong> Um filme-base já aparece com seu ano. Arraste o novo cartaz para antes, depois ou entre filmes. Também vale tocar nos botões + da linha.</p></div><div class="help-step"><b>3</b><p><strong>Confirme e descubra.</strong> Acertou? O filme fica na linha. Errou? Perde uma vida e o filme é descartado. Depois, avance para o próximo.</p></div><p class="modal-note"><strong>Mesmo ano?</strong> Filmes do mesmo ano ficam agrupados. Não aparece um espaço de inserção entre dois filmes que já tenham o mesmo ano.</p><p><strong>Catálogo:</strong> O Movieline seleciona automaticamente filmes conhecidos, com pelo menos 1.000 votos no TMDB. É um critério aproximado de reconhecimento. O filme-base não conta na meta. Cada tentativa conta como um filme, acertando ou errando. Sem limite de filmes, o catálogo é reembaralhado apenas quando o ciclo se esgota. Você pode encerrar a qualquer momento.</p><p><strong>Teclado:</strong> Tab navega; Enter ativa botões; escolha um botão + com Tab e ative com Enter. A roda do mouse e dois dedos percorrem a linha horizontal.</p>`));
 $('credits-button').addEventListener('click', () => modal(creditsHTML()));
 function updateSound() {
   $('sound-button').innerHTML = icon(sound ? 'sound-on' : 'sound-off');
@@ -68,23 +68,22 @@ function updateSetup() {
 }
 function renderCategories() {
   const enabled = categories.filter(c=>c.enabled);
-  const groups = [['COLEÇÕES',enabled.filter(c=>c.kind!=='genre')],['GÊNEROS',enabled.filter(c=>c.kind==='genre')]];
-  $('category-list').innerHTML = groups.filter(([,rows])=>rows.length).map(([title,rows])=>
-    `<div class="category-group-title">${title}</div><div class="category-chips">${rows.map(c=> {
+  const groups = [['GÊNEROS','tag',enabled.filter(c=>c.kind==='genre')],['COLEÇÕES ESPECIAIS','trophy',enabled.filter(c=>c.kind!=='genre')]];
+  $('category-list').innerHTML = groups.filter(([, ,rows])=>rows.length).map(([title,groupIcon,rows])=>
+    `<div class="category-group-title">${icon(groupIcon)}<span>${title}</span></div><div class="category-chips">${rows.map(c=> {
       const state = include.has(c.id)?'included':exclude.has(c.id)?'excluded':'';
-      return `<button type="button" class="category-chip ${state}" data-category="${escapeHTML(c.id)}" title="${escapeHTML(c.description)}" aria-label="${escapeHTML(c.label)}, ${state==='included'?'incluída':state==='excluded'?'excluída':'neutra'}" aria-pressed="${!!state}"><span class="chip-state">${state==='excluded'?'−':'+'}</span>${escapeHTML(c.label)}</button>`;
+      const stateIcon = state ? `<span class="chip-state">${icon(state==='included'?'check':'close')}</span>` : '';
+      return `<button type="button" class="category-chip ${state}" data-category="${escapeHTML(c.id)}" title="${escapeHTML(c.description)}" aria-label="${escapeHTML(c.label)}, ${state==='included'?'incluída':state==='excluded'?'excluída':'neutra'}" aria-pressed="${!!state}">${stateIcon}<span>${escapeHTML(c.label)}</span></button>`;
     }).join('')}</div>`).join('') || '<p style="font-size:12px">Nenhuma categoria ativa. O modo sem filtros continua disponível.</p>';
 }
 $('category-list').addEventListener('click',e=>{
   const el=e.target.closest('[data-category]');if(!el)return;
-  const id=el.dataset.category, selected=editMode==='include'?include:exclude, other=editMode==='include'?exclude:include;
-  selected.has(id)?selected.delete(id):selected.add(id);other.delete(id);
+  const id=el.dataset.category;
+  if(include.has(id)){include.delete(id);exclude.add(id);}
+  else if(exclude.has(id)){exclude.delete(id);}
+  else include.add(id);
   renderCategories();updateSetup();
-  // Keep keyboard focus on the same chip without moving the category viewport.
   $('category-list').querySelector(`[data-category="${CSS.escape(id)}"]`)?.focus({preventScroll:true});
-});
-for(const mode of ['include','exclude']) $('mode-'+mode).addEventListener('click',()=>{
-  editMode=mode;for(const other of ['include','exclude']){$('mode-'+other).classList.toggle('active',other===mode);$('mode-'+other).setAttribute('aria-pressed',String(other===mode));}
 });
 $('clear-filters').addEventListener('click',()=>{include.clear();exclude.clear();renderCategories();updateSetup();});
 for(const kind of ['films','lives']) {

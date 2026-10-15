@@ -8,9 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;650;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&family=Barlow+Condensed:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./styles.css?v=6">
-<link rel="stylesheet" href="./home.css?v=9">
-<link rel="stylesheet" href="./game.css?v=9">
-<script type="module" src="./js/app.js?v=9"></script>
+<link rel="stylesheet" href="./home.css?v=10">
+<link rel="stylesheet" href="./game.css?v=10">
+<script type="module" src="./js/app.js?v=10"></script>
 </head>
 <body data-screen="setup">
 <div class="home-stage" aria-hidden="true">
@@ -37,19 +37,18 @@
   </div>
  </div>
  <div class="setup-ticket">
-  <div class="ticket-heading"><div><span class="ticket-kicker">✦ &nbsp; BILHETERIA &nbsp; ✦</span><h1>MONTE SUA <span>SESSÃO</span></h1></div><div class="ticket-emblem" aria-hidden="true"><span>★</span><span>★</span><span>★</span></div></div>
+  <div class="ticket-heading"><h1><i aria-hidden="true">★</i> MONTE SUA <span>SESSÃO</span> <i aria-hidden="true">★</i></h1><div class="heading-rule" aria-hidden="true"><span></span><b>★</b><span></span></div></div>
   <form id="setup-form" novalidate>
    <div class="counters">
     <fieldset class="counter"><legend><span data-icon="film"></span> FILMES</legend><div class="quantity-bar"><div class="stepper"><button type="button" data-step="films:-1" aria-label="Diminuir filmes">−</button><input id="films-input" aria-label="Quantidade de filmes" inputmode="numeric" type="number" min="1" step="1" value="20"><button type="button" data-step="films:1" aria-label="Aumentar filmes">+</button></div><button type="button" class="infinity-button" id="films-infinity-button" data-infinity="films" aria-pressed="false" aria-label="Ativar filmes infinitos" title="Filmes infinitos">∞</button><input type="checkbox" id="films-infinite" hidden></div></fieldset>
     <fieldset class="counter"><legend><span data-icon="heart"></span> VIDAS</legend><div class="quantity-bar"><div class="stepper"><button type="button" data-step="lives:-1" aria-label="Diminuir vidas">−</button><input id="lives-input" aria-label="Quantidade de vidas" inputmode="numeric" type="number" min="1" step="1" value="5"><button type="button" data-step="lives:1" aria-label="Aumentar vidas">+</button></div><button type="button" class="infinity-button" id="lives-infinity-button" data-infinity="lives" aria-pressed="false" aria-label="Ativar vidas infinitas" title="Vidas infinitas">∞</button><input type="checkbox" id="lives-infinite" hidden></div></fieldset>
    </div>
-   <div class="ticket-cutline" aria-hidden="true"></div>
-   <div class="category-top"><div class="category-section-heading"><span class="category-section-symbol" aria-hidden="true">✦</span><h2>CATEGORIAS</h2></div><button type="button" class="plain-button" id="clear-filters" aria-label="Limpar filtros">↺ Limpar</button></div>
-   <div class="filter-toolbar"><div class="segmented" role="group" aria-label="Ação ao selecionar categoria"><button type="button" id="mode-include" class="active" aria-pressed="true">+ INCLUIR</button><button type="button" id="mode-exclude" aria-pressed="false">− EXCLUIR</button></div></div>
-   <div class="category-area" id="category-area" tabindex="0" role="region" aria-label="Categorias de filmes"><div id="category-list"></div></div>
+   <div class="ticket-cutline" aria-hidden="true"><span>★</span></div>
+   <div class="category-legend"><button type="button" class="plain-button" id="clear-filters" aria-label="Limpar filtros">↻ LIMPAR</button><span class="legend-item legend-include"><i></i>INCLUIR</span><span class="legend-item legend-exclude"><i></i>EXCLUIR</span></div>
+   <div class="category-area" id="category-area" tabindex="0" role="region" aria-label="Categorias de filmes. Toque uma vez para incluir, duas para excluir e três para limpar."><div id="category-list"></div></div>
    <div class="sr-only" id="filter-summary" aria-live="polite"></div>
    <div class="ticket-divider"></div>
-   <button class="primary-button start-button" id="start-button" type="submit"><span class="start-spark" aria-hidden="true">✦</span><span>JOGAR</span><span data-icon="arrow-right"></span></button>
+   <button class="primary-button start-button" id="start-button" type="submit"><span data-icon="play"></span><span>COMEÇAR A SESSÃO</span><span data-icon="arrow-right"></span></button>
    <div id="setup-error" class="error-message" role="alert" hidden></div>
    <span class="sr-only" id="session-recap"></span>
   </form>
