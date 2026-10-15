@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f6efdF"><meta name="description" content="Luzes, câmera... em que ano? Monte sua linha do tempo de filmes no Movieline, um jogo AltiGames.">
+<title>Movieline — Todo filme tem seu tempo.</title>
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;650;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles.css">
+<script type="module" src="./js/app.js"></script>
+</head>
+<body>
+<div class="app-shell">
+<header class="site-header">
+ <a class="brand" href="./index.html" aria-label="Movieline, início"><img src="./assets/favicon.svg" alt="" width="38" height="38"><span>MOVIE<span class="brand-red">LINE</span><small>UM JOGO ALTIGAMES</small></span></a>
+ <div class="header-middle"><span class="mini-star">✦</span> SUA SESSÃO DE NOSTALGIA <span class="mini-star">✦</span></div>
+ <nav class="header-actions" aria-label="Menu"><button class="text-button" id="help-button"><span data-icon="help"></span><span class="help-label">Como jogar</span></button><button class="icon-button" id="sound-button" aria-label="Ativar sons" aria-pressed="false"><span data-icon="sound-off"></span></button><a class="icon-button" href="./admin.html" aria-label="Abrir painel administrativo" title="Painel administrativo"><span data-icon="settings"></span></a></nav>
+</header>
+<main id="main-content">
+<section id="setup-screen" class="setup-screen">
+ <div class="intro">
+  <div class="eyebrow"><span class="small-rule"></span> LUZES, CÂMERA... EM QUE ANO?</div>
+  <h1>Todo filme<br>tem seu <em>tempo.</em><span class="heading-star">✦</span></h1>
+  <p class="intro-copy">Dos clássicos aos favoritos. Coloque os filmes<br class="desktop-only"> na ordem e descubra o cinéfilo que existe em você.</p>
+  <div class="cinema-scene"><div class="scene-stamp">SESSÃO<br><b>SEM PRESSA</b><span>★ ★ ★</span></div><img src="./assets/cinema.svg" alt="Ilustração de um cinema retrô com letreiro, pipoca e ingresso." width="580" height="390"></div>
+  <div class="intro-bottom"><span class="tiny-film"></span> VOCÊ CONHECE O FILME. MAS LEMBRA A ÉPOCA?</div>
+ </div>
+ <div class="setup-ticket">
+  <div class="ticket-heading"><div><div class="eyebrow">BILHETERIA ABERTA</div><h2>Monte sua sessão</h2></div><span class="ticket-number">Nº 001<br><b>★★★</b></span></div>
+  <form id="setup-form" novalidate>
+   <div class="counters">
+    <fieldset class="counter"><legend><span data-icon="film"></span> Quantos filmes?</legend><div class="stepper"><button type="button" data-step="films:-1" aria-label="Diminuir filmes">−</button><input id="films-input" aria-label="Quantidade de filmes para adivinhar" inputmode="numeric" type="number" min="1" step="1" value="20"><button type="button" data-step="films:1" aria-label="Aumentar filmes">+</button></div><label class="infinite-control"><input id="films-infinite" type="checkbox"><span class="toggle"></span><span>Filmes infinitos</span><b>∞</b></label></fieldset>
+    <fieldset class="counter"><legend><span data-icon="heart"></span> Quantas vidas?</legend><div class="stepper"><button type="button" data-step="lives:-1" aria-label="Diminuir vidas">−</button><input id="lives-input" aria-label="Quantidade de vidas" inputmode="numeric" type="number" min="1" step="1" value="5"><button type="button" data-step="lives:1" aria-label="Aumentar vidas">+</button></div><label class="infinite-control"><input id="lives-infinite" type="checkbox"><span class="toggle"></span><span>Vidas infinitas</span><b>∞</b></label></fieldset>
+   </div>
+   <div class="category-top"><h3>O que vai passar hoje?</h3><button type="button" class="plain-button" id="clear-filters">Limpar filtros</button></div>
+   <div class="filter-toolbar"><div class="segmented" role="group" aria-label="Ação ao selecionar categoria"><button type="button" id="mode-include" class="active" aria-pressed="true">+ Incluir</button><button type="button" id="mode-exclude" aria-pressed="false">− Excluir</button></div><div class="filter-key"><i></i> incluída <i class="minus-key"></i> excluída</div></div>
+   <div class="category-area" id="category-area" tabindex="0" role="region" aria-label="Categorias de filmes"><div id="category-list"></div></div>
+   <div class="filter-summary" id="filter-summary" aria-live="polite">Todos os gêneros estão convidados.</div>
+   <div class="fame-row"><label for="fame-select">Quais filmes?</label><select id="fame-select" aria-label="Popularidade dos filmes"><option value="famous">Famosos · 1.000+ votos</option><option value="hits">Muito famosos · 3.000+ votos</option><option value="broad">Catálogo amplo · 50+ votos</option></select></div>
+ <div class="ticket-divider"></div>
+   <div class="session-recap"><span data-icon="ticket"></span><span id="session-recap">20 filmes para adivinhar + 1 filme-base</span><span class="mode-badge" id="source-badge">TMDB</span></div>
+   <button class="primary-button start-button" id="start-button" type="submit"><span>COMEÇAR A SESSÃO</span><span data-icon="arrow-right"></span></button>
+   <div class="setup-note"><span id="catalog-note">Catálogo TMDB · Novos filmes ao longo da partida.</span></div>
+   <div id="setup-error" class="error-message" role="alert" hidden></div>
+  </form>
+  <button type="button" id="resume-button" class="resume-button" hidden>↻ Continuar minha sessão salva</button>
+ </div>
+</section>
+<section id="game-screen" class="game-screen" hidden aria-label="Partida de Movieline">
+ <div class="game-topline"><div><div class="eyebrow" id="round-label">SESSÃO EM ANDAMENTO</div><h2>Sua linha do tempo<span class="mini-star">✦</span></h2></div><div class="game-stats"><div><small>FILMES</small><b id="stat-progress">0 / 20</b></div><div><small>ACERTOS</small><b id="stat-score">0</b></div><div class="lives-stat"><small>VIDAS</small><b id="stat-lives">♥ 5</b></div><button class="outline-button" id="end-button">Encerrar<span data-icon="close"></span></button></div></div>
+ <div class="progress-rail"><div id="progress-fill"></div></div>
+ <div class="timeline-panel">
+  <div class="timeline-heading"><span><span data-icon="arrow-left"></span> MAIS ANTIGOS</span><span class="timeline-hint">Arraste o filme ou toque em um espaço</span><span>MAIS RECENTES <span data-icon="arrow-right"></span></span></div>
+  <div class="timeline-scroll" id="timeline-scroll" tabindex="0" role="region" aria-label="Linha do tempo horizontal. Use a roda do mouse, dois dedos ou as setas de navegação."><div class="timeline-track" id="timeline-track"></div></div>
+  <div class="timeline-bottom"><span><span data-icon="mouse"></span> Deslize para explorar sua linha</span><div class="timeline-nav"><button class="icon-button" id="scroll-left" aria-label="Rolar linha do tempo para a esquerda"><span data-icon="arrow-left"></span></button><button class="icon-button" id="scroll-right" aria-label="Rolar linha do tempo para a direita"><span data-icon="arrow-right"></span></button></div></div>
+ </div>
+ <div class="turn-panel" id="turn-panel">
+  <div id="candidate" class="candidate" tabindex="0" role="button" aria-label="Arraste o filme para a linha do tempo. Setas esquerda e direita escolhem a posição."></div>
+  <div class="turn-copy"><div class="eyebrow" id="turn-eyebrow">EM QUE ANO ESSA HISTÓRIA COMEÇOU?</div><h3 id="turn-title">Onde esse filme se encaixa?</h3><p id="turn-instruction">Arraste o cartaz para um espaço da linha do tempo.<br>O ano só aparece depois de confirmar.</p><div id="placement-label" class="placement-label" aria-live="polite">Escolha uma posição acima</div></div>
+  <div class="turn-actions"><div class="position-buttons"><button class="outline-button" id="position-left" aria-label="Mover filme uma posição para a esquerda"><span data-icon="arrow-left"></span></button><span>POSIÇÃO</span><button class="outline-button" id="position-right" aria-label="Mover filme uma posição para a direita"><span data-icon="arrow-right"></span></button></div><button class="primary-button" id="confirm-button" disabled>Confirmar posição<span data-icon="check"></span></button><button class="primary-button" id="next-button" hidden>Próximo filme<span data-icon="arrow-right"></span></button><small id="turn-small-note">Pode mudar de ideia antes de confirmar.</small></div>
+ </div>
+ <div id="game-error" class="error-message" role="alert" hidden></div>
+</section>
+<section id="results-screen" class="results-screen" hidden>
+ <div class="results-ticket"><div class="eyebrow">OS CRÉDITOS ESTÃO SUBINDO</div><div class="results-emblem" aria-hidden="true">★</div><h1 id="results-title">Que sessão!</h1><p id="results-description"></p><div class="results-stats"><div><b id="results-score">0</b><small>ACERTOS</small></div><div><b id="results-accuracy">0%</b><small>APROVEITAMENTO</small></div><div><b id="results-streak">0</b><small>MELHOR SEQUÊNCIA</small></div></div><div class="ticket-divider"></div><p id="results-detail"></p><button class="primary-button" id="play-again">MAIS UMA SESSÃO<span data-icon="arrow-right"></span></button><button class="plain-button" id="review-timeline">Rever minha linha do tempo</button></div>
+</section>
+</main>
+<footer class="site-footer"><span class="footer-brand">FEITO PARA QUEM AMA CINEMA. <b>ALTIGAMES</b></span><button class="credits-trigger" id="credits-button"><span>Dados e cartazes: <b>TMDB</b></span><span class="credits-word">Créditos ↗</span></button></footer>
+</div>
+<dialog id="info-dialog" class="info-dialog"><button class="dialog-close icon-button" aria-label="Fechar janela"><span data-icon="close"></span></button><div id="dialog-content"></div></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+<div class="sr-only" id="live-region" aria-live="polite"></div>
+<noscript><div class="noscript">Ative o JavaScript no navegador para jogar Movieline.</div></noscript>
+<script>if(location.protocol==='file:'){document.addEventListener('DOMContentLoaded',function(){var e=document.getElementById('setup-error');e.hidden=false;e.textContent='Este pacote é para publicação. Abra o jogo pelo endereço do site no GitHub Pages, não diretamente pelo arquivo index.html.';document.getElementById('start-button').disabled=true;});}</script>
+</body></html>

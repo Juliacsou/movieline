@@ -1,0 +1,265 @@
+{
+  "version": 2,
+  "categories": [
+    {
+      "id": "genre-28",
+      "label": "Ação",
+      "kind": "genre",
+      "tmdb_ids": [
+        28
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 0
+    },
+    {
+      "id": "genre-12",
+      "label": "Aventura",
+      "kind": "genre",
+      "tmdb_ids": [
+        12
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 1
+    },
+    {
+      "id": "genre-16",
+      "label": "Animação",
+      "kind": "genre",
+      "tmdb_ids": [
+        16
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 2
+    },
+    {
+      "id": "genre-35",
+      "label": "Comédia",
+      "kind": "genre",
+      "tmdb_ids": [
+        35
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 3
+    },
+    {
+      "id": "genre-18",
+      "label": "Drama",
+      "kind": "genre",
+      "tmdb_ids": [
+        18
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 4
+    },
+    {
+      "id": "genre-10751",
+      "label": "Família",
+      "kind": "genre",
+      "tmdb_ids": [
+        10751
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 5
+    },
+    {
+      "id": "genre-14",
+      "label": "Fantasia",
+      "kind": "genre",
+      "tmdb_ids": [
+        14
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 6
+    },
+    {
+      "id": "genre-878",
+      "label": "Ficção científica",
+      "kind": "genre",
+      "tmdb_ids": [
+        878
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 7
+    },
+    {
+      "id": "genre-27",
+      "label": "Terror",
+      "kind": "genre",
+      "tmdb_ids": [
+        27
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 8
+    },
+    {
+      "id": "genre-10749",
+      "label": "Romance",
+      "kind": "genre",
+      "tmdb_ids": [
+        10749
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 9
+    },
+    {
+      "id": "genre-53",
+      "label": "Suspense",
+      "kind": "genre",
+      "tmdb_ids": [
+        53
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 10
+    },
+    {
+      "id": "genre-80",
+      "label": "Crime",
+      "kind": "genre",
+      "tmdb_ids": [
+        80
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 11
+    },
+    {
+      "id": "genre-99",
+      "label": "Documentário",
+      "kind": "genre",
+      "tmdb_ids": [
+        99
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 12
+    },
+    {
+      "id": "genre-36",
+      "label": "História",
+      "kind": "genre",
+      "tmdb_ids": [
+        36
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 13
+    },
+    {
+      "id": "genre-10402",
+      "label": "Música",
+      "kind": "genre",
+      "tmdb_ids": [
+        10402
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 14
+    },
+    {
+      "id": "genre-9648",
+      "label": "Mistério",
+      "kind": "genre",
+      "tmdb_ids": [
+        9648
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 15
+    },
+    {
+      "id": "genre-10752",
+      "label": "Guerra",
+      "kind": "genre",
+      "tmdb_ids": [
+        10752
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 16
+    },
+    {
+      "id": "genre-37",
+      "label": "Faroeste",
+      "kind": "genre",
+      "tmdb_ids": [
+        37
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 17
+    },
+    {
+      "id": "genre-10770",
+      "label": "Filme para TV",
+      "kind": "genre",
+      "tmdb_ids": [
+        10770
+      ],
+      "description": "Gênero cadastrado no TMDB.",
+      "enabled": true,
+      "sort_order": 18
+    },
+    {
+      "id": "disney",
+      "label": "Disney",
+      "kind": "company",
+      "tmdb_ids": [
+        2,
+        6125
+      ],
+      "description": "Produções creditadas a Walt Disney Pictures ou Walt Disney Animation Studios. Não significa todo o Disney+.",
+      "enabled": true,
+      "sort_order": 30
+    },
+    {
+      "id": "pixar",
+      "label": "Pixar",
+      "kind": "company",
+      "tmdb_ids": [
+        3
+      ],
+      "description": "Filmes com crédito de produção da Pixar.",
+      "enabled": true,
+      "sort_order": 31
+    },
+    {
+      "id": "marvel",
+      "label": "Marvel Studios",
+      "kind": "company",
+      "tmdb_ids": [
+        420
+      ],
+      "description": "Filmes com crédito de produção da Marvel Studios.",
+      "enabled": true,
+      "sort_order": 32
+    },
+    {
+      "id": "oscar-picture",
+      "label": "Oscar: Melhor Filme",
+      "kind": "curated",
+      "tmdb_ids": [
+        238,
+        13,
+        597,
+        98,
+        122,
+        496243,
+        872585
+      ],
+      "description": "Seleção inicial de 7 vencedores de Melhor Filme. Lista editorial, não exaustiva; editável no painel.",
+      "enabled": true,
+      "sort_order": 33
+    }
+  ]
+}
