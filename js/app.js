@@ -1,9 +1,8 @@
 import { CONFIG } from '../config.js';
-import { FAME_PRESETS, famePreset } from './presets.js';
 import { settingsFrom, makeGame, confirmMovie, advanceMovie, finishGame } from './engine.js';
 import { loadCategories, proxyURL, MoviePool } from './api.js';
 import { readLocal, writeLocal, removeLocal, saveSession, loadSession } from './storage.js';
-import { icon, hydrateIcons, escapeHTML, poster, handleImages, toast, creditsHTML, TMDB_LOGO } from './ui.js';
+import { icon, hydrateIcons, escapeHTML, poster, handleImages, toast, creditsHTML } from './ui.js';
 const $ = id => document.getElementById(id);
 let categories = [], include = new Set(), exclude = new Set(), editMode = 'include';
 let game = null, pool = null, busy = false, sound = readLocal('sound',false), audioContext;
@@ -11,10 +10,7 @@ let saved = loadSession(), lastRange = '', drag = null, hoverSlot = null, suppre
 let geometry = {offset:20,card:146,slot:116,width:0,stride:262};
 let storageWarning = false;
 hydrateIcons();
-// The approved logo is unmodified; its small footer link opens the full, readable notice.
-$('credits-button').insertAdjacentHTML('afterbegin', `<img src="${TMDB_LOGO}" alt="TMDB" width="31" height="23" style="object-fit:contain">`);
 const formValues = readLocal('settings');
-$('fame-select').value = formValues?.fame && Object.hasOwn(FAME_PRESETS,formValues.fame) ? formValues.fame : CONFIG.DEFAULT_FAME;
 if (formValues) {
   $('films-input').value = formValues.filmValue || 20; $('lives-input').value = formValues.lifeValue || 5;
   $('films-infinite').checked = !!formValues.filmInfinite; $('lives-infinite').checked = !!formValues.lifeInfinite;
@@ -28,7 +24,7 @@ function showError(id, message = '') { $(id).textContent = message; $(id).hidden
 function modal(html) { $('dialog-content').innerHTML = html; hydrateIcons($('info-dialog')); $('info-dialog').showModal(); }
 $('info-dialog').querySelector('.dialog-close').addEventListener('click', () => $('info-dialog').close());
 $('info-dialog').addEventListener('click', e => { if (e.target === $('info-dialog')) { const r = e.target.getBoundingClientRect(); if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close(); } });
-$('help-button').addEventListener('click', () => modal(`<h2>Um filme de cada vez.</h2><div class="help-step"><b>1</b><p><strong>Monte sua sessão.</strong> Escolha filmes, vidas e categorias. Em Incluir, você combina opções; em Excluir, remove o que não quer.</p></div><div class="help-step"><b>2</b><p><strong>Encontre o lugar do filme.</strong> Um filme-base já aparece com seu ano. Arraste o novo cartaz para antes, depois ou entre filmes. Também vale tocar nos espaços ou usar as setas de posição.</p></div><div class="help-step"><b>3</b><p><strong>Confirme e descubra.</strong> Acertou? O filme fica na linha. Errou? Perde uma vida e o filme é descartado. Depois, avance para o próximo.</p></div><p class="modal-note"><strong>Mesmo ano? Sem pegadinha.</strong> Qualquer posição que mantenha os anos em ordem é aceita. A regra usa o ano da data principal de lançamento do TMDB, sem filtro regional do Brasil.</p><p><strong>Popularidade:</strong> Famosos usa no mínimo 1.000 votos no TMDB; Muito famosos, 3.000; Catálogo amplo, 50. É uma aproximação de familiaridade, não uma garantia de reconhecimento. O filtro também vale para listas como Oscar.<br><br>O filme-base não conta na meta. Cada tentativa conta como um filme, acertando ou errando. Sem limite de filmes, o catálogo é reembaralhado apenas quando o ciclo se esgota. Você pode encerrar a qualquer momento.</p><p><strong>Teclado:</strong> Tab navega; Enter ativa botões; com o cartaz em foco, ← e → escolhem a posição. A roda do mouse e dois dedos percorrem a linha horizontal.</p>`));
+$('help-button').addEventListener('click', () => modal(`<h2>Um filme de cada vez.</h2><div class="help-step"><b>1</b><p><strong>Monte sua sessão.</strong> Escolha filmes, vidas e categorias. Em Incluir, você combina opções; em Excluir, remove o que não quer.</p></div><div class="help-step"><b>2</b><p><strong>Encontre o lugar do filme.</strong> Um filme-base já aparece com seu ano. Arraste o novo cartaz para antes, depois ou entre filmes. Também vale tocar nos espaços ou usar as setas de posição.</p></div><div class="help-step"><b>3</b><p><strong>Confirme e descubra.</strong> Acertou? O filme fica na linha. Errou? Perde uma vida e o filme é descartado. Depois, avance para o próximo.</p></div><p class="modal-note"><strong>Mesmo ano? Sem pegadinha.</strong> Qualquer posição que mantenha os anos em ordem é aceita. A regra usa o ano da data principal de lançamento do TMDB, sem filtro regional do Brasil.</p><p><strong>Catálogo:</strong> O Movieline seleciona automaticamente filmes conhecidos, com pelo menos 1.000 votos no TMDB. É um critério aproximado de reconhecimento. O filme-base não conta na meta. Cada tentativa conta como um filme, acertando ou errando. Sem limite de filmes, o catálogo é reembaralhado apenas quando o ciclo se esgota. Você pode encerrar a qualquer momento.</p><p><strong>Teclado:</strong> Tab navega; Enter ativa botões; com o cartaz em foco, ← e → escolhem a posição. A roda do mouse e dois dedos percorrem a linha horizontal.</p>`));
 $('credits-button').addEventListener('click', () => modal(creditsHTML()));
 function updateSound() {
   $('sound-button').innerHTML = icon(sound ? 'sound-on' : 'sound-off');
@@ -52,25 +48,26 @@ $('sound-button').addEventListener('click',()=>{sound=!sound;writeLocal('sound',
 updateSound();
 function persistSetup() {
   writeLocal('settings',{filmValue:$('films-input').value,lifeValue:$('lives-input').value,
-    fame:$('fame-select').value,filmInfinite:$('films-infinite').checked,lifeInfinite:$('lives-infinite').checked,include:[...include],exclude:[...exclude]});
+    filmInfinite:$('films-infinite').checked,lifeInfinite:$('lives-infinite').checked,include:[...include],exclude:[...exclude]});
 }
-function settings() { return settingsFrom({fame:$('fame-select').value,films:$('films-infinite').checked?null:$('films-input').value,
+function settings() { return settingsFrom({fame:CONFIG.DEFAULT_FAME,films:$('films-infinite').checked?null:$('films-input').value,
   lives:$('lives-infinite').checked?null:$('lives-input').value,include:[...include],exclude:[...exclude]}); }
 function updateSetup() {
   for (const kind of ['films','lives']) {
     const infinite=$(kind+'-infinite').checked; $(kind+'-input').disabled=infinite;
     $(kind+'-input').parentElement.classList.toggle('infinite',infinite);
+    const btn=$(kind+'-infinity-button');btn.setAttribute('aria-pressed',String(infinite));
+    btn.setAttribute('aria-label',(infinite?'Desativar':'Ativar')+' '+(kind==='films'?'filmes':'vidas')+' infinitos');
     document.querySelectorAll(`[data-step^="${kind}:"]`).forEach(b=>b.disabled=infinite);
   }
-  $('session-recap').textContent = $('films-infinite').checked ? 'Sem limite de filmes · você decide quando parar' : `${$('films-input').value || '—'} filmes para adivinhar + 1 filme-base`;
+  $('session-recap').textContent = $('films-infinite').checked ? 'Filmes infinitos' : `${$('films-input').value || '—'} filmes`;
   $('filter-summary').textContent = include.size || exclude.size ?
     `${include.size ? include.size+' incluída(s), combinadas entre si' : 'Todos os filmes'}${exclude.size ? ' · '+exclude.size+' excluída(s)' : ''}. Exclusões prevalecem.` : 'Todos os gêneros estão convidados. Toque para filtrar.';
-  $('fame-select').title = famePreset($('fame-select').value).note + ' Critério aproximado de familiaridade; também se aplica às coleções.';
   persistSetup();
 }
 function renderCategories() {
   const enabled = categories.filter(c=>c.enabled);
-  const groups = [['COLEÇÕES ESPECIAIS',enabled.filter(c=>c.kind!=='genre')],['GÊNEROS',enabled.filter(c=>c.kind==='genre')]];
+  const groups = [['COLEÇÕES',enabled.filter(c=>c.kind!=='genre')],['GÊNEROS',enabled.filter(c=>c.kind==='genre')]];
   $('category-list').innerHTML = groups.filter(([,rows])=>rows.length).map(([title,rows])=>
     `<div class="category-group-title">${title}</div><div class="category-chips">${rows.map(c=> {
       const state = include.has(c.id)?'included':exclude.has(c.id)?'excluded':'';
@@ -88,10 +85,10 @@ $('category-list').addEventListener('click',e=>{
 for(const mode of ['include','exclude']) $('mode-'+mode).addEventListener('click',()=>{
   editMode=mode;for(const other of ['include','exclude']){$('mode-'+other).classList.toggle('active',other===mode);$('mode-'+other).setAttribute('aria-pressed',String(other===mode));}
 });
-$('fame-select').addEventListener('change',updateSetup);
 $('clear-filters').addEventListener('click',()=>{include.clear();exclude.clear();renderCategories();updateSetup();});
 for(const kind of ['films','lives']) {
   $(kind+'-infinite').addEventListener('change',updateSetup);$(kind+'-input').addEventListener('input',updateSetup);
+  $(kind+'-infinity-button').addEventListener('click',()=>{const check=$(kind+'-infinite');check.checked=!check.checked;check.dispatchEvent(new Event('change',{bubbles:true}));});
 }
 document.querySelectorAll('[data-step]').forEach(b=>b.addEventListener('click',()=>{
   const [kind,delta]=b.dataset.step.split(':');const input=$(kind+'-input');input.value=Math.max(1,(Number(input.value)||1)+Number(delta));updateSetup();
@@ -117,7 +114,7 @@ $('setup-form').addEventListener('submit',async e=>{
     const newPool=new MoviePool(s,active,base);
     await newPool.prepare();
     const baseMovie=await newPool.next(false), current=await newPool.next(false);
-    if(!baseMovie||!current)throw new Error('Não encontramos dois filmes válidos com esses filtros. Amplie a popularidade ou experimente outra combinação.');
+    if(!baseMovie||!current)throw new Error('Não encontramos dois filmes válidos com esses filtros. Experimente outras categorias.');
     pool=newPool;game=makeGame(s,baseMovie,current);showScreen('game');lastRange='';renderGame();persistGame();
     $('candidate').focus({preventScroll:true});prefetchMovies();
   } catch(error){showError('setup-error',error.message);}
@@ -311,8 +308,6 @@ async function initialize(){
     const active=new Set(categories.filter(c=>c.enabled).map(c=>c.id));
     include=new Set([...include].filter(id=>active.has(id)));exclude=new Set([...exclude].filter(id=>active.has(id)));
     renderCategories();updateSetup();proxyURL();
-    $('source-badge').textContent='TMDB';$('source-badge').classList.add('live');
-    $('catalog-note').textContent=loaded.source==='preview'?'Prévia de categorias neste navegador · TMDB conectado.':'Catálogo TMDB · Novos filmes ao longo da partida.';
     $('start-button').disabled=false;
   }catch(error){showError('setup-error','Não foi possível carregar o catálogo de categorias. '+error.message);}
 }

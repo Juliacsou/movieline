@@ -2,49 +2,57 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#f6efdF"><meta name="description" content="Luzes, câmera... em que ano? Monte sua linha do tempo de filmes no Movieline, um jogo AltiGames.">
-<title>Movieline — Todo filme tem seu tempo.</title>
+<meta name="theme-color" content="#480b17"><meta name="description" content="Luzes, câmera... em que ano? Monte sua linha do tempo de filmes no Movieline, um jogo AltiGames.">
+<title>Movieline — Sua sessão de cinema</title>
 <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;650;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;650;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&family=Barlow+Condensed:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./home.css?v=5">
 <script type="module" src="./js/app.js"></script>
 </head>
-<body>
+<body data-screen="setup">
+<div class="home-stage" aria-hidden="true">
+ <div class="theatre-glow"></div>
+ <div class="theatre-beam theatre-beam-left"></div><div class="theatre-beam theatre-beam-right"></div>
+ <div class="theatre-curtain theatre-curtain-left"></div><div class="theatre-curtain theatre-curtain-right"></div>
+ <div class="theatre-valance"></div><div class="theatre-floor"></div>
+</div>
 <div class="app-shell">
 <header class="site-header">
  <a class="brand" href="./index.html" aria-label="Movieline, início"><img src="./assets/favicon.svg" alt="" width="38" height="38"><span>MOVIE<span class="brand-red">LINE</span><small>UM JOGO ALTIGAMES</small></span></a>
- <div class="header-middle"><span class="mini-star">✦</span> SUA SESSÃO DE NOSTALGIA <span class="mini-star">✦</span></div>
- <nav class="header-actions" aria-label="Menu"><button class="text-button" id="help-button"><span data-icon="help"></span><span class="help-label">Como jogar</span></button><button class="icon-button" id="sound-button" aria-label="Ativar sons" aria-pressed="false"><span data-icon="sound-off"></span></button><a class="icon-button" href="./admin.html" aria-label="Abrir painel administrativo" title="Painel administrativo"><span data-icon="settings"></span></a></nav>
+ <div class="header-actions" role="group" aria-label="Ajuda e som"><button class="icon-button" id="help-button" aria-label="Como jogar" title="Como jogar"><span data-icon="help"></span></button><button class="icon-button" id="sound-button" aria-label="Ativar sons" aria-pressed="false" title="Som"><span data-icon="sound-off"></span></button></div>
 </header>
 <main id="main-content">
-<section id="setup-screen" class="setup-screen">
- <div class="intro">
-  <div class="eyebrow"><span class="small-rule"></span> LUZES, CÂMERA... EM QUE ANO?</div>
-  <h1>Todo filme<br>tem seu <em>tempo.</em><span class="heading-star">✦</span></h1>
-  <p class="intro-copy">Dos clássicos aos favoritos. Coloque os filmes<br class="desktop-only"> na ordem e descubra o cinéfilo que existe em você.</p>
-  <div class="cinema-scene"><div class="scene-stamp">SESSÃO<br><b>SEM PRESSA</b><span>★ ★ ★</span></div><img src="./assets/cinema.svg" alt="Ilustração de um cinema retrô com letreiro, pipoca e ingresso." width="580" height="390"></div>
-  <div class="intro-bottom"><span class="tiny-film"></span> VOCÊ CONHECE O FILME. MAS LEMBRA A ÉPOCA?</div>
+<section id="setup-screen" class="setup-screen" aria-label="Configurar partida">
+ <div class="intro" aria-hidden="true">
+  <div class="stage-art">
+   <div class="stage-center"><img src="./assets/cinema.svg?v=5" width="560" height="530" alt="" draggable="false"></div>
+   <img class="stage-prop stage-reel" src="./assets/film-reel.svg" width="144" height="144" alt="" draggable="false">
+   <img class="stage-prop stage-clapper" src="./assets/clapper.svg" width="165" height="130" alt="" draggable="false">
+   <img class="stage-prop stage-ticket" src="./assets/golden-ticket.svg" width="140" height="90" alt="" draggable="false">
+   <img class="stage-prop stage-popcorn" src="./assets/popcorn.svg" width="144" height="184" alt="" draggable="false">
+   <span class="stage-spark stage-spark-a">&#10022;</span><span class="stage-spark stage-spark-b">&#10023;</span><span class="stage-spark stage-spark-c">&#10022;</span><span class="stage-spark stage-spark-d">&#10022;</span>
+  </div>
  </div>
  <div class="setup-ticket">
-  <div class="ticket-heading"><div><div class="eyebrow">BILHETERIA ABERTA</div><h2>Monte sua sessão</h2></div><span class="ticket-number">Nº 001<br><b>★★★</b></span></div>
+  <div class="ticket-heading"><div><span class="ticket-kicker">✦ &nbsp; BILHETERIA &nbsp; ✦</span><h1>MONTE SUA <span>SESSÃO</span></h1></div><div class="ticket-emblem" aria-hidden="true"><span>★</span><span>★</span><span>★</span></div></div>
   <form id="setup-form" novalidate>
    <div class="counters">
-    <fieldset class="counter"><legend><span data-icon="film"></span> Quantos filmes?</legend><div class="stepper"><button type="button" data-step="films:-1" aria-label="Diminuir filmes">−</button><input id="films-input" aria-label="Quantidade de filmes para adivinhar" inputmode="numeric" type="number" min="1" step="1" value="20"><button type="button" data-step="films:1" aria-label="Aumentar filmes">+</button></div><label class="infinite-control"><input id="films-infinite" type="checkbox"><span class="toggle"></span><span>Filmes infinitos</span><b>∞</b></label></fieldset>
-    <fieldset class="counter"><legend><span data-icon="heart"></span> Quantas vidas?</legend><div class="stepper"><button type="button" data-step="lives:-1" aria-label="Diminuir vidas">−</button><input id="lives-input" aria-label="Quantidade de vidas" inputmode="numeric" type="number" min="1" step="1" value="5"><button type="button" data-step="lives:1" aria-label="Aumentar vidas">+</button></div><label class="infinite-control"><input id="lives-infinite" type="checkbox"><span class="toggle"></span><span>Vidas infinitas</span><b>∞</b></label></fieldset>
+    <fieldset class="counter"><legend><span data-icon="film"></span> FILMES</legend><div class="quantity-bar"><div class="stepper"><button type="button" data-step="films:-1" aria-label="Diminuir filmes">−</button><input id="films-input" aria-label="Quantidade de filmes" inputmode="numeric" type="number" min="1" step="1" value="20"><button type="button" data-step="films:1" aria-label="Aumentar filmes">+</button></div><button type="button" class="infinity-button" id="films-infinity-button" data-infinity="films" aria-pressed="false" aria-label="Ativar filmes infinitos" title="Filmes infinitos">∞</button><input type="checkbox" id="films-infinite" hidden></div></fieldset>
+    <fieldset class="counter"><legend><span data-icon="heart"></span> VIDAS</legend><div class="quantity-bar"><div class="stepper"><button type="button" data-step="lives:-1" aria-label="Diminuir vidas">−</button><input id="lives-input" aria-label="Quantidade de vidas" inputmode="numeric" type="number" min="1" step="1" value="5"><button type="button" data-step="lives:1" aria-label="Aumentar vidas">+</button></div><button type="button" class="infinity-button" id="lives-infinity-button" data-infinity="lives" aria-pressed="false" aria-label="Ativar vidas infinitas" title="Vidas infinitas">∞</button><input type="checkbox" id="lives-infinite" hidden></div></fieldset>
    </div>
-   <div class="category-top"><h3>O que vai passar hoje?</h3><button type="button" class="plain-button" id="clear-filters">Limpar filtros</button></div>
-   <div class="filter-toolbar"><div class="segmented" role="group" aria-label="Ação ao selecionar categoria"><button type="button" id="mode-include" class="active" aria-pressed="true">+ Incluir</button><button type="button" id="mode-exclude" aria-pressed="false">− Excluir</button></div><div class="filter-key"><i></i> incluída <i class="minus-key"></i> excluída</div></div>
+   <div class="ticket-cutline" aria-hidden="true"></div>
+   <div class="category-top"><div class="category-section-heading"><span class="category-section-symbol" aria-hidden="true">✦</span><h2>CATEGORIAS</h2></div><button type="button" class="plain-button" id="clear-filters" aria-label="Limpar filtros">↺ Limpar</button></div>
+   <div class="filter-toolbar"><div class="segmented" role="group" aria-label="Ação ao selecionar categoria"><button type="button" id="mode-include" class="active" aria-pressed="true">+ INCLUIR</button><button type="button" id="mode-exclude" aria-pressed="false">− EXCLUIR</button></div></div>
    <div class="category-area" id="category-area" tabindex="0" role="region" aria-label="Categorias de filmes"><div id="category-list"></div></div>
-   <div class="filter-summary" id="filter-summary" aria-live="polite">Todos os gêneros estão convidados.</div>
-   <div class="fame-row"><label for="fame-select">Quais filmes?</label><select id="fame-select" aria-label="Popularidade dos filmes"><option value="famous">Famosos · 1.000+ votos</option><option value="hits">Muito famosos · 3.000+ votos</option><option value="broad">Catálogo amplo · 50+ votos</option></select></div>
- <div class="ticket-divider"></div>
-   <div class="session-recap"><span data-icon="ticket"></span><span id="session-recap">20 filmes para adivinhar + 1 filme-base</span><span class="mode-badge" id="source-badge">TMDB</span></div>
-   <button class="primary-button start-button" id="start-button" type="submit"><span>COMEÇAR A SESSÃO</span><span data-icon="arrow-right"></span></button>
-   <div class="setup-note"><span id="catalog-note">Catálogo TMDB · Novos filmes ao longo da partida.</span></div>
+   <div class="sr-only" id="filter-summary" aria-live="polite"></div>
+   <div class="ticket-divider"></div>
+   <button class="primary-button start-button" id="start-button" type="submit"><span class="start-spark" aria-hidden="true">✦</span><span>JOGAR</span><span data-icon="arrow-right"></span></button>
    <div id="setup-error" class="error-message" role="alert" hidden></div>
+   <span class="sr-only" id="session-recap"></span>
   </form>
-  <button type="button" id="resume-button" class="resume-button" hidden>↻ Continuar minha sessão salva</button>
+  <button type="button" id="resume-button" class="resume-button" hidden>↻ Retomar sessão</button>
  </div>
 </section>
 <section id="game-screen" class="game-screen" hidden aria-label="Partida de Movieline">
@@ -66,7 +74,7 @@
  <div class="results-ticket"><div class="eyebrow">OS CRÉDITOS ESTÃO SUBINDO</div><div class="results-emblem" aria-hidden="true">★</div><h1 id="results-title">Que sessão!</h1><p id="results-description"></p><div class="results-stats"><div><b id="results-score">0</b><small>ACERTOS</small></div><div><b id="results-accuracy">0%</b><small>APROVEITAMENTO</small></div><div><b id="results-streak">0</b><small>MELHOR SEQUÊNCIA</small></div></div><div class="ticket-divider"></div><p id="results-detail"></p><button class="primary-button" id="play-again">MAIS UMA SESSÃO<span data-icon="arrow-right"></span></button><button class="plain-button" id="review-timeline">Rever minha linha do tempo</button></div>
 </section>
 </main>
-<footer class="site-footer"><span class="footer-brand">FEITO PARA QUEM AMA CINEMA. <b>ALTIGAMES</b></span><button class="credits-trigger" id="credits-button"><span>Dados e cartazes: <b>TMDB</b></span><span class="credits-word">Créditos ↗</span></button></footer>
+<footer class="site-footer"><span class="footer-brand">© ALTIGAMES</span><button class="credits-trigger" id="credits-button"><span>Dados: <b>TMDB</b></span><span class="credits-word">Créditos ↗</span></button></footer>
 </div>
 <dialog id="info-dialog" class="info-dialog"><button class="dialog-close icon-button" aria-label="Fechar janela"><span data-icon="close"></span></button><div id="dialog-content"></div></dialog>
 <div class="toast" id="toast" role="status" hidden></div>

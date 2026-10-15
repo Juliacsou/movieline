@@ -16,34 +16,3 @@
 @media(max-width:520px){.timeline-slot.selected .slot-button{translate:0 -9px}}
 
 @media(max-height:650px){.setup-ticket:has(#setup-error:not([hidden])) .category-area{min-height:24px;max-height:36px}#setup-error{max-height:78px;overflow:auto}}
-/* v2: keep the approved layout; let only the category list shrink for the new filter. */
-.setup-ticket{display:flex;flex-direction:column;max-height:100%}
-.setup-ticket #setup-form{display:flex;flex-direction:column;min-height:0}
-.setup-ticket #setup-form>:not(.category-area){flex-shrink:0}
-.setup-ticket .category-area{flex:1 1 auto;min-height:38px}
-.fame-row{display:flex;align-items:center;gap:10px;min-height:31px;margin:6px 0 0;font-size:11px}
-.fame-row label{white-space:nowrap;font-weight:600}
-.fame-row select{flex:1;min-width:0;max-width:100%;height:31px;border:1px solid var(--line);border-radius:5px;padding:4px 8px;color:var(--ink);background:var(--paper);font-size:11px;cursor:pointer}
-@media(max-height:740px){.fame-row{min-height:26px;margin-top:3px;font-size:10px}.fame-row select{height:26px;font-size:10px;padding:3px 5px}}
-@media(max-width:520px){.fame-row{min-height:28px;font-size:10px;gap:7px}.fame-row select{height:28px;font-size:10px}.setup-ticket .category-area{min-height:32px}}
-.setup-screen{min-height:0;grid-template-rows:minmax(0,1fr)}
-.setup-ticket{min-height:0}
-.ticket-heading{flex-shrink:0}
-@media(max-height:520px) and (max-width:850px) and (orientation:landscape){
-  .setup-ticket #setup-form{display:grid;grid-template-columns:1fr 1.15fr;grid-template-rows:auto auto minmax(32px,1fr) auto auto auto;gap:5px 22px}
-  .setup-ticket .category-area{grid-column:2;grid-row:3 / span 2;min-height:38px;max-height:100px}
-  .fame-row{grid-column:1;grid-row:4;margin:0}
-  .session-recap{grid-column:1;grid-row:5}
-  .filter-summary{grid-column:2;grid-row:5}
-  .start-button{grid-column:1;grid-row:6}
-  .setup-note{grid-column:2;grid-row:6}
-}
-@media(max-width:520px) and (max-height:600px) and (orientation:portrait){
-  .ticket-heading .eyebrow{display:none}
-  .ticket-heading{margin-bottom:9px}
-  .counters{margin-bottom:10px}
-  .stepper{height:38px}
-  .infinite-control{margin-top:8px}
-  .filter-summary{min-height:20px;margin-top:5px;font-size:9px}
-  .setup-ticket .category-area{min-height:60px}
-}

@@ -1,0 +1,234 @@
+/* Movieline v5. The v3 ticket/grid is preserved; scenery has its own layer. */
+:root { --stage-burgundy:#540d1b; --stage-red:#8e1525; --stage-cream:#fff0ce; --stage-gold:#efbc58; --stage-ink:#571923; --stage-display:'Barlow Condensed',Impact,'Arial Narrow',sans-serif; }
+body[data-screen="setup"] {background:#340913;color:var(--stage-cream)}
+.home-stage {display:none;position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:
+ linear-gradient(180deg,#20050b59 0%,transparent 24%,#24051091 100%),
+ repeating-linear-gradient(90deg,#400914 0px,#721224 19px,#8e1b2d 36px,#681023 56px,#350711 76px,#560d1c 94px)}
+body[data-screen="setup"] .home-stage {display:block}
+.theatre-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 26% 45%,#e7ac636b 0%,#ca67532e 24%,transparent 55%),radial-gradient(ellipse at 75% 28%,#cd534a3d,transparent 65%),linear-gradient(90deg,#1301088c,transparent 15%,transparent 86%,#120107a6)}
+.theatre-beam{position:absolute;top:-15%;height:112%;width:61%;opacity:.17;filter:blur(12px);transform-origin:50% 0;clip-path:polygon(29% 0,33% 0,100% 100%,0 100%);background:linear-gradient(180deg,#ffe7aeac,transparent 95%);animation:theatre-light 12s ease-in-out infinite alternate}
+.theatre-beam-left{left:-5%;transform:rotate(-8deg)}
+.theatre-beam-right{right:-4%;transform:rotate(12deg);animation-delay:-5s;opacity:.1}
+.theatre-curtain{position:absolute;top:0;bottom:0;width:clamp(46px,9vw,160px);background:repeating-linear-gradient(90deg,#430613 0,#8e172b 22%,#ad2639 39%,#6b0c20 63%,#3d0412 85%,#681024 100%);border-inline-end:2px solid #d7a1538c;box-shadow:4px 0 20px #18020b82}
+.theatre-curtain-left{left:-2vw;clip-path:polygon(0 0,100% 0,91% 24%,68% 55%,71% 78%,100% 100%,0 100%)}
+.theatre-curtain-right{right:-2vw;transform:scaleX(-1);clip-path:polygon(0 0,100% 0,91% 24%,68% 55%,71% 78%,100% 100%,0 100%)}
+.theatre-valance{position:absolute;inset:0 0 auto;height:clamp(75px,16vh,170px);background:url('./assets/curtain-valance.svg') center top/100% 100% no-repeat;filter:drop-shadow(0 10px 12px #22020c65);opacity:.93}
+.theatre-floor{position:absolute;inset:auto 0 0;height:24%;background:radial-gradient(ellipse at 28% 88%,#eab96524,transparent 52%),linear-gradient(180deg,transparent,#16030b99);pointer-events:none}
+body[data-screen="setup"] .app-shell {max-width:1600px;padding-inline:clamp(18px,3.5vw,70px);position:relative;z-index:1}
+body[data-screen="setup"] .site-header {height:73px;flex-basis:73px;border:0;background:none;position:relative}
+body[data-screen="setup"] .site-header:after{display:none}
+body[data-screen="setup"] .brand{font-size:22px;color:#fff1ca;letter-spacing:2.5px}
+body[data-screen="setup"] .brand-red{color:var(--stage-gold)}
+body[data-screen="setup"] .brand small{color:#dec092;font-size:7px;letter-spacing:3.2px}
+body[data-screen="setup"] .brand img{background:#ffe2a0;border-radius:50%;padding:2px;box-shadow:0 0 0 2px #e2ae52}
+body[data-screen="setup"] .header-actions .icon-button{border-color:#d5a55185;color:#f8da9c;background:#47101c99}
+body[data-screen="setup"] .header-actions .icon-button:hover{background:#8c2531}
+body[data-screen="setup"] .site-footer{height:38px;flex:0 0 38px;border:0;color:#ddbb85}
+body[data-screen="setup"] .site-footer .footer-brand{font-size:9px;letter-spacing:2px;color:#efcb8a}
+body[data-screen="setup"] .site-footer .credits-trigger{color:#e8cc98;font-size:10px}
+body[data-screen="setup"] .site-footer .credits-word{color:#f6d899}
+#setup-screen{height:100%;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.06fr);grid-template-rows:minmax(0,1fr);gap:clamp(18px,3.4vw,62px);align-items:stretch;padding:clamp(13px,2vh,23px) 0 clamp(12px,1.9vh,20px);}
+#setup-screen .intro{grid-column:1;min-width:0;min-height:0;height:100%;max-height:none;display:block;padding:0;position:relative;pointer-events:none;overflow:visible}
+#setup-screen .stage-art{position:relative;width:100%;height:100%;min-height:0;isolation:isolate}
+#setup-screen .stage-center{position:absolute;left:12%;top:20%;width:80%;height:72%;display:flex;align-items:center;justify-content:center;animation:stage-float 7s ease-in-out infinite}
+#setup-screen .stage-center img{display:block;width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 16px 16px #19020b75)}
+#setup-screen .stage-prop{position:absolute;z-index:2;height:auto;object-fit:contain;pointer-events:none;filter:drop-shadow(4px 9px 7px #1f04109e)}
+#setup-screen .stage-reel{width:23%;max-width:150px;left:0;top:15%;animation:reel-spin 35s linear infinite}
+#setup-screen .stage-clapper{width:25%;max-width:157px;right:0;top:19%;transform:rotate(12deg);animation:clapper-rock 5s ease-in-out infinite alternate}
+#setup-screen .stage-ticket{width:27%;max-width:164px;right:0;bottom:6%;transform:rotate(5deg);animation:ticket-float 7s ease-in-out infinite}
+#setup-screen .stage-popcorn{width:25%;max-width:148px;left:0;bottom:11%;transform:rotate(-10deg);animation:popcorn-float 6s ease-in-out infinite}
+#setup-screen .stage-spark{position:absolute;color:#f9ca68;filter:drop-shadow(0 0 4px #f7c36566);font-size:clamp(20px,3vw,38px);line-height:1;pointer-events:none;animation:twinkle 4s ease-in-out infinite}
+#setup-screen .stage-spark-a{top:14%;left:43%}
+#setup-screen .stage-spark-b{top:48%;right:1%;animation-delay:-1.1s}
+#setup-screen .stage-spark-c{bottom:38%;left:4%;animation-delay:-1.9s;font-size:clamp(16px,2vw,27px)}
+#setup-screen .stage-spark-d{bottom:4%;left:44%;animation-delay:-.8s;font-size:clamp(16px,2vw,26px)}
+@keyframes reel-spin {to{transform:rotate(360deg)}}
+@keyframes stage-float {50%{transform:translateY(-7px)}}
+@keyframes clapper-rock {to{transform:rotate(19deg) translateY(-10px)}}
+@keyframes ticket-float {50%{transform:rotate(-8deg) translateY(-10px)}}
+@keyframes popcorn-float {50%{transform:rotate(-4deg) translateY(-9px)}}
+@keyframes twinkle {50%{opacity:.45;transform:scale(.82)}}
+@keyframes theatre-light {to{opacity:.23;translate:3% 0}}
+/* Bilheteria: placar emoldurado, controles art-deco e ingresso. */
+#setup-screen .setup-ticket{
+  --line:#d6b57f;--ink:#491923;--muted:#8e655a;--red:#8f1726;--red-dark:#65121c;--paper:#fff0cb;
+  align-self:center;justify-self:end;width:100%;max-width:690px;max-height:100%;min-height:0;
+  display:flex;flex-direction:column;position:relative;isolation:isolate;padding:clamp(19px,2.2vw,31px) clamp(21px,2.3vw,34px) clamp(16px,2vw,28px);
+  color:var(--stage-ink);background:linear-gradient(130deg,#fff4d8 0%,#ffedc3 60%,#f9e3b6 100%);
+  border:4px solid #dfaf52;border-radius:13px;box-shadow:0 0 0 4px #621321,0 10px 0 #320812,0 17px 36px #14050bb3;
+}
+#setup-screen .setup-ticket:before{position:absolute;z-index:-1;content:"";inset:9px;border:3px dotted #c79443;opacity:.57;border-radius:7px;pointer-events:none}
+#setup-screen .setup-ticket:after{content:"";position:absolute;pointer-events:none;inset:0;background:radial-gradient(circle at 50% 50%,transparent 0 70%,#b47b3f10 100%);border-radius:inherit;z-index:-1}
+#setup-screen .ticket-heading{margin:0 0 clamp(16px,2vh,22px);align-items:flex-start;gap:10px}
+#setup-screen .ticket-kicker{font-size:10px;letter-spacing:3px;font-weight:800;color:#b34136}
+#setup-screen .ticket-heading h1{margin:3px 0 0;font-family:var(--stage-display);font-size:clamp(36px,4vw,64px);font-weight:800;line-height:.9;letter-spacing:.4px;color:#791322;text-shadow:2px 2px 0 #f3c96e}
+#setup-screen .ticket-heading h1 span{color:#b5362c}
+#setup-screen .ticket-emblem{display:flex;align-items:center;justify-content:center;gap:3px;align-self:center;min-width:74px;height:44px;border-top:2px solid #bc7f33;border-bottom:2px solid #bc7f33;color:#d29936;font-size:15px;transform:rotate(2deg)}
+#setup-screen #setup-form{display:flex;flex:1;flex-direction:column;min-height:0}
+#setup-screen #setup-form>:not(.category-area){flex-shrink:0}
+#setup-screen .counters{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,1.3vw,15px);margin:0 0 clamp(11px,1.6vh,17px)}
+#setup-screen .counter{border:2px solid #bd703e;background:#fff9e8;border-radius:3px;padding:10px 10px 12px;box-shadow:3px 3px 0 #e5ad58;min-width:0}
+#setup-screen .counter legend{font-family:var(--stage-display);font-size:17px;font-weight:800;color:#8e1b27;letter-spacing:1.2px;margin:0 0 3px;padding:0 5px;line-height:1.15}
+#setup-screen .counter legend .icon{width:15px;height:15px;stroke-width:2.2;vertical-align:-2px;color:#b54031}
+#setup-screen .quantity-bar{display:flex;align-items:stretch;gap:7px;min-height:42px}
+#setup-screen .stepper{height:42px;min-width:0;flex:1;border:1px solid #a75e33;border-radius:2px;background:#fff6e1;box-shadow:inset 0 0 0 1px #fff}
+#setup-screen .stepper button{width:34px;min-width:30px;flex-shrink:0;background:#edbf61;color:#541822;font-size:22px;font-weight:800;border-right:1px solid #a75e33}
+#setup-screen .stepper button:last-child{border-right:0;border-left:1px solid #a75e33}
+#setup-screen .stepper button:hover{background:#ffd981}
+#setup-screen .stepper button:disabled{background:#e7d8b6}
+#setup-screen .stepper input{font-family:var(--stage-display);font-size:29px;font-weight:700;color:#4d2020}
+#setup-screen .stepper.infinite input{color:transparent;-webkit-text-fill-color:transparent}
+#setup-screen .stepper.infinite:after{font-family:var(--stage-display);font-size:29px;color:#84302b}
+#setup-screen .infinity-button{width:45px;min-width:45px;display:flex;justify-content:center;align-items:center;border:1.5px solid #a35e31;border-radius:2px;background:#ffedc1;color:#832531;font-family:Georgia,serif;font-size:31px;line-height:1;box-shadow:2px 2px 0 #e2b05e;transition:transform .16s,background .16s,color .16s}
+#setup-screen .infinity-button:hover{background:#fbdc96}
+#setup-screen .infinity-button[aria-pressed="true"]{background:#8b1d2b;border-color:#6e1420;color:#ffdf8d;box-shadow:inset 0 0 0 2px #c2564c,2px 2px 0 #dba151}
+#setup-screen .ticket-cutline{position:relative;margin:0 0 clamp(9px,1.5vh,16px);border-top:1px solid #a44b38;border-bottom:1px solid #e9b86b;height:5px}
+#setup-screen .ticket-cutline:before{content:"";position:absolute;left:50%;top:-7px;width:10px;height:10px;background:#c08a40;transform:rotate(45deg);border:2px solid #ffefd0}
+#setup-screen .category-top{margin:0 0 8px;gap:10px;align-items:center}
+#setup-screen .category-section-heading{display:flex;align-items:center;gap:7px}
+#setup-screen .category-section-symbol{font-size:18px;color:#ae352b}
+#setup-screen .category-top h2{margin:0;font-family:var(--stage-display);font-size:22px;letter-spacing:1px;font-weight:800;color:#711526}
+#setup-screen .category-top .plain-button{font-family:var(--stage-display);font-size:12px;font-weight:700;color:#9c4932;letter-spacing:.5px;border:1px solid #c58c5c;padding:3px 8px;border-radius:2px;background:#fff6df}
+#setup-screen .category-top .plain-button:hover{background:#f5dbad;text-decoration:none}
+#setup-screen .filter-toolbar{margin:0 0 9px}
+#setup-screen .segmented{padding:0;border-radius:2px;border:1px solid #982f2e;background:#f4e1bd;gap:0;overflow:hidden}
+#setup-screen .segmented button{font-family:var(--stage-display);font-weight:800;font-size:14px;letter-spacing:.65px;min-height:33px;padding:6px 14px;border-radius:0;color:#75262a}
+#setup-screen .segmented button+button{border-left:1px solid #982f2e}
+#setup-screen .segmented button.active{background:#762332;color:#fff5d6}
+#setup-screen .segmented #mode-exclude.active{background:#a1342b;color:#fff5d6}
+#setup-screen .category-area{flex:1 1 auto;max-height:none;min-height:52px;overflow-y:auto;padding:3px 7px 8px 1px;overscroll-behavior:contain;scrollbar-color:#b77948 #f3ddb5;scrollbar-width:thin}
+#setup-screen .category-group-title{font-family:var(--stage-display);font-size:12px;letter-spacing:1.4px;color:#8b3b31;font-weight:800;margin:3px 0 8px}
+#setup-screen .category-group-title:not(:first-child){margin-top:13px}
+#setup-screen .category-chips{gap:6px}
+#setup-screen .category-chip{background:#fff8e8;border:1px solid #ce995e;color:#5e2523;box-shadow:1px 2px 0 #deb780;border-radius:3px;min-height:31px;padding:7px 10px;font-size:11px;font-weight:650;line-height:1.13}
+#setup-screen .category-chip:hover{background:#f2d8a4;border-color:#ae5937}
+#setup-screen .category-chip.included{background:#d3e0c8;color:#22503f;border:1px solid #729278;box-shadow:1px 2px 0 #a9bea5}
+#setup-screen .category-chip.excluded{background:#f8d9d0;color:#8d2932;border:1px solid #ba7066;box-shadow:1px 2px 0 #d4a39b}
+#setup-screen .ticket-divider{margin:12px -18px 12px;height:1px;border-top:2px dashed #be8359}
+#setup-screen .ticket-divider:before,#setup-screen .ticket-divider:after{background:#4e101b;border:0;width:17px;height:17px;top:-10px}
+#setup-screen .ticket-divider:before{left:-24px}
+#setup-screen .ticket-divider:after{right:-24px}
+#setup-screen .start-button{width:100%;min-height:57px;box-shadow:0 4px 0 #4b0b14;justify-content:space-between;background:#8c1725;color:#fff1c6;border:2px solid #5b0d19;border-radius:4px;padding:10px 18px;font-family:var(--stage-display);font-size:25px;font-weight:800;letter-spacing:1.5px;transition:background .18s,transform .18s}
+#setup-screen .start-button:hover:not(:disabled){background:#ad2630;box-shadow:0 4px 0 #4b0b14}
+#setup-screen .start-button .start-spark{font-size:21px;color:#efc35d}
+#setup-screen .start-button .icon{width:24px;height:24px}
+#setup-screen .resume-button{font-family:var(--stage-display);font-size:15px;letter-spacing:.6px;color:#85262d;font-weight:800;padding:11px 0 0}
+#setup-screen .error-message{flex-shrink:0;max-height:66px;overflow:auto;font-size:11px;margin-top:8px}
+/* Tablet e celular: cenário vira fundo e bilheteria ocupa a dobra. */
+@media(max-width:950px){
+ body[data-screen="setup"] .site-header{height:64px;flex-basis:64px}
+ #setup-screen{grid-template-columns:minmax(0,1fr);gap:0;padding:14px 0}
+ #setup-screen .intro{display:none}
+ #setup-screen .setup-ticket{justify-self:center;align-self:center;max-width:720px;height:auto;max-height:100%}
+ #setup-screen .category-area{flex:0 1 auto;max-height:min(285px,36vh)}
+}
+@media(max-height:760px) and (min-width:951px){
+ body[data-screen="setup"] .site-header{height:59px;flex-basis:59px}
+ body[data-screen="setup"] .site-footer{height:31px;flex-basis:31px}
+ #setup-screen{padding:12px 0;gap:24px}
+ #setup-screen .setup-ticket{padding:16px 21px}
+ #setup-screen .ticket-heading{margin-bottom:12px}
+ #setup-screen .ticket-heading h1{font-size:clamp(31px,3.9vw,48px)}
+ #setup-screen .ticket-emblem{height:29px}
+ #setup-screen .counters{margin-bottom:10px}
+ #setup-screen .counter{padding:7px 8px 9px}
+ #setup-screen .ticket-cutline{margin-bottom:9px}
+ #setup-screen .category-top{margin-bottom:5px}
+ #setup-screen .filter-toolbar{margin-bottom:7px}
+ #setup-screen .category-chip{min-height:27px;padding:6px 8px}
+ #setup-screen .category-group-title:not(:first-child){margin-top:8px}
+ #setup-screen .ticket-divider{margin-top:9px;margin-bottom:9px}
+ #setup-screen .start-button{min-height:46px;font-size:21px}
+}
+@media(max-width:520px){
+ body[data-screen="setup"] .app-shell{padding:0 12px}
+ body[data-screen="setup"] .site-header{height:53px;flex-basis:53px}
+ body[data-screen="setup"] .site-footer{height:29px;flex-basis:29px}
+ body[data-screen="setup"] .brand{font-size:17px;letter-spacing:1.3px;gap:7px}
+ body[data-screen="setup"] .brand img{width:29px;height:29px}
+ body[data-screen="setup"] .brand small{font-size:6px;letter-spacing:1.8px}
+ body[data-screen="setup"] .header-actions{gap:4px}
+ body[data-screen="setup"] .header-actions .icon-button{height:30px;width:30px}
+ body[data-screen="setup"] .header-actions .icon{height:16px;width:16px}
+ #setup-screen{padding:10px 0 9px}
+ #setup-screen .setup-ticket{padding:16px 15px 13px;border-width:3px;border-radius:9px;box-shadow:0 0 0 2px #611623,0 5px 0 #370811}
+ #setup-screen .setup-ticket:before{inset:6px;border-width:2px}
+ #setup-screen .ticket-heading{margin-bottom:14px}
+ #setup-screen .ticket-kicker{font-size:8px;letter-spacing:1.9px}
+ #setup-screen .ticket-heading h1{font-size:clamp(32px,9vw,46px)}
+ #setup-screen .ticket-emblem{min-width:50px;font-size:10px;height:34px;gap:0}
+ #setup-screen .counters{gap:7px;margin-bottom:12px}
+ #setup-screen .counter{padding:6px 5px 8px;border-width:1.5px;box-shadow:2px 2px 0 #e3b060}
+ #setup-screen .counter legend{font-size:14px;letter-spacing:.5px;padding:0 2px}
+ #setup-screen .counter legend .icon{height:12px;width:12px}
+ #setup-screen .quantity-bar{min-height:35px;gap:4px}
+ #setup-screen .stepper{height:35px}
+ #setup-screen .stepper button{width:25px;min-width:24px;font-size:19px}
+ #setup-screen .stepper input{font-size:23px}
+ #setup-screen .stepper.infinite:after{font-size:24px}
+ #setup-screen .infinity-button{width:33px;min-width:33px;font-size:25px;box-shadow:1px 1px 0 #e2b05e}
+ #setup-screen .ticket-cutline{margin-bottom:11px}
+ #setup-screen .category-section-heading{gap:5px}
+ #setup-screen .category-top h2{font-size:20px}
+ #setup-screen .category-top{margin-bottom:6px}
+ #setup-screen .filter-toolbar{margin-bottom:8px}
+ #setup-screen .segmented button{min-height:30px;font-size:13px;padding:5px 11px}
+ #setup-screen .category-area{min-height:38px;padding-bottom:3px;max-height:min(245px,33vh)}
+ #setup-screen .category-group-title{font-size:11px;margin:3px 0 6px}
+ #setup-screen .category-group-title:not(:first-child){margin-top:9px}
+ #setup-screen .category-chip{font-size:10px;min-height:28px;padding:7px 8px;box-shadow:1px 1px 0 #deb780}
+ #setup-screen .ticket-divider{margin:10px -8px}
+ #setup-screen .ticket-divider:before{left:-18px}
+ #setup-screen .ticket-divider:after{right:-18px}
+ #setup-screen .start-button{min-height:45px;font-size:21px;padding:6px 12px}
+ #setup-screen .resume-button{padding-top:7px;font-size:12px}
+ body[data-screen="setup"] .site-footer .footer-brand{letter-spacing:1px;font-size:8px}
+ body[data-screen="setup"] .credits-trigger{gap:7px;font-size:9px}
+ body[data-screen="setup"] .credits-word{font-size:8px}
+}
+@media(max-width:520px) and (max-height:700px){
+ #setup-screen{padding:7px 0}
+ #setup-screen .setup-ticket{padding:11px 13px 9px}
+ #setup-screen .ticket-heading{margin-bottom:7px}
+ #setup-screen .ticket-heading h1{font-size:34px}
+ #setup-screen .counters{margin-bottom:8px}
+ #setup-screen .category-top{margin-bottom:4px}
+ #setup-screen .ticket-cutline{margin-bottom:6px}
+ #setup-screen .filter-toolbar{margin-bottom:5px}
+ #setup-screen .ticket-divider{margin:7px -8px}
+ #setup-screen .start-button{min-height:40px;font-size:19px}
+}
+@media(max-width:850px) and (max-height:520px) and (orientation:landscape){
+ body[data-screen="setup"] .site-header{height:44px;flex-basis:44px}
+ body[data-screen="setup"] .site-footer{height:23px;flex-basis:23px}
+ #setup-screen{padding:5px 0}
+ #setup-screen .setup-ticket{max-width:940px;padding:8px 19px 8px}
+ #setup-screen .ticket-heading{margin-bottom:5px}
+ #setup-screen .ticket-heading h1{font-size:28px}
+ #setup-screen .ticket-kicker,#setup-screen .ticket-emblem{display:none}
+ #setup-screen #setup-form{display:grid;grid-template-columns:1fr 1.1fr;grid-template-rows:repeat(5,auto);column-gap:16px;row-gap:4px;align-content:stretch;min-height:0}
+ #setup-screen .counters{grid-column:1;grid-row:1 / span 3;align-self:center;display:flex;flex-direction:column;gap:6px;margin:0}
+ #setup-screen .counter{padding:3px 8px}
+ #setup-screen .counter legend{font-size:13px}
+ #setup-screen .quantity-bar{min-height:28px}
+ #setup-screen .stepper{height:28px}
+ #setup-screen .ticket-cutline{display:none}
+ #setup-screen .category-top{grid-column:2;grid-row:1;margin:0}
+ #setup-screen .filter-toolbar{grid-column:2;grid-row:2;margin:0}
+ #setup-screen .category-area{grid-column:2;grid-row:3 / span 2;max-height:94px;min-height:40px}
+ #setup-screen .ticket-divider{grid-column:1;grid-row:4;margin:0}
+ #setup-screen .start-button{grid-column:1;grid-row:5;min-height:33px;font-size:18px}
+ #setup-screen #setup-form>.sr-only{display:none}
+ #setup-screen .resume-button{position:absolute;right:21px;top:10px;font-size:11px;padding:0}
+}
+@media(prefers-reduced-motion:reduce){
+ #setup-screen .stage-art *, .home-stage *{animation:none!important}
+}
+
+@media(max-width:350px) and (orientation:portrait){
+ #setup-screen .ticket-emblem{display:none}
+ #setup-screen .ticket-heading h1{font-size:32px}
+ #setup-screen .ticket-heading{margin-bottom:8px}
+ #setup-screen .counter legend{font-size:13px}
+ #setup-screen .category-area{max-height:min(170px,29vh)}
+}

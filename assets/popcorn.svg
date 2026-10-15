@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="144" height="184" viewBox="0 0 144 184" fill="none">
+<defs>
+ <clipPath id="tub"><path d="M22 71Q72 62 122 71L108 174Q72 182 36 174Z"/></clipPath>
+ <g id="kernel"><path d="M-10 0C-16-3-14-12-7-11C-8-20 3-20 5-13C12-17 18-8 12-3C20 4 11 13 5 8C2 17-9 13-8 6C-16 10-21 2-10 0Z" fill="#ffeab0" stroke="#c58d41" stroke-width="1.15"/><path d="M-7-3C-7-9 0-13 4-8L5-3L0 2Z" fill="#fff8d7"/><path d="M-4 0L1-4L6-1L4 5L-1 5Z" fill="#cf983f"/><path d="M-6 6L-2 2M9 4L4 2" stroke="#e0b85e" stroke-width="1.2" stroke-linecap="round"/></g>
+</defs>
+<!-- Separate, naturally irregular popcorn kernels. -->
+<g>
+<use href="#kernel" transform="translate(32 48) rotate(10) scale(0.86)"/>
+<use href="#kernel" transform="translate(49 33) rotate(-20) scale(0.85)"/>
+<use href="#kernel" transform="translate(69 27) rotate(7) scale(0.88)"/>
+<use href="#kernel" transform="translate(89 34) rotate(25) scale(0.83)"/>
+<use href="#kernel" transform="translate(109 48) rotate(-24) scale(0.88)"/>
+<use href="#kernel" transform="translate(28 65) rotate(-8) scale(0.85)"/>
+<use href="#kernel" transform="translate(49 57) rotate(28) scale(0.93)"/>
+<use href="#kernel" transform="translate(71 48) rotate(-35) scale(1.0)"/>
+<use href="#kernel" transform="translate(93 59) rotate(9) scale(0.94)"/>
+<use href="#kernel" transform="translate(117 64) rotate(35) scale(0.65)"/>
+<use href="#kernel" transform="translate(65 70) rotate(-10) scale(0.9)"/>
+<use href="#kernel" transform="translate(91 75) rotate(-20) scale(0.82)"/>
+<use href="#kernel" transform="translate(45 77) rotate(42) scale(0.83)"/>
+<use href="#kernel" transform="translate(43 13) rotate(-25) scale(0.47)"/>
+<use href="#kernel" transform="translate(118 20) rotate(26) scale(0.4)"/>
+</g>
+<path d="M22 78Q72 72 122 78L108 174Q72 182 36 174Z" fill="#fff0cb"/>
+<g clip-path="url(#tub)" fill="#b33031">
+ <path d="M20 71H35L48 180H32Z"/><path d="M51 70H66L67 181H53Z"/><path d="M82 70H97L91 181H76Z"/><path d="M115 70H130L112 181H97Z"/>
+</g>
+<path d="M22 78Q72 72 122 78L108 174Q72 182 36 174Z" stroke="#99302b" stroke-width="2.5"/>
+<path d="M25 81Q72 76 119 81" stroke="#efc77e" stroke-width="3"/>
+<ellipse cx="73" cy="126" rx="24" ry="25" fill="#f7d888" stroke="#a36a35" stroke-width="2"/>
+<path d="M73 109L78 120L90 122L81 130L83 143L73 137L62 143L64 130L55 122L68 120Z" fill="#a53031"/>
+<path d="M39 172Q74 179 106 172" stroke="#d29e58" stroke-width="3"/>
+</svg>
