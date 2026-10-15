@@ -1,4 +1,4 @@
-/* Movieline v7 - game layout. Home styles and game rules are independent. */
+/* Movieline v8 - game layout. Home styles and game rules are independent. */
 body:is([data-screen="game"],[data-screen="results"]){background:#310812;color:#ffedc5}
 body:is([data-screen="game"],[data-screen="results"]) .home-stage{display:block}
 body:is([data-screen="game"],[data-screen="results"]) .app-shell{position:relative;z-index:1;max-width:1560px;padding-inline:clamp(12px,3.5vw,64px)}
@@ -528,4 +528,71 @@ body:is([data-screen="game"],[data-screen="results"]) .credits-word{color:#efd3a
 @media(max-height:470px) and (orientation:landscape){
   #game-screen .timeline-heading h2{display:block;font-size:16px}
   #game-screen .turn-panel{padding:10px}
+}
+
+/* v8 responsive corrections: keep the current-film marquee usable on narrow screens. */
+@media(max-width:560px){
+  #game-screen .turn-panel{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr) 42px;
+    gap:9px;
+  }
+  #game-screen .candidate{
+    grid-column:1;
+    grid-row:1;
+    width:100%;
+    min-width:0;
+    display:flex;
+    align-items:center;
+    overflow:hidden;
+  }
+  #game-screen .candidate-copy{
+    flex:1 1 auto;
+    min-width:0;
+    width:auto;
+  }
+  #game-screen .candidate-copy h3{
+    width:100%;
+    max-width:100%;
+    font-size:clamp(20px,6.2vw,26px);
+    -webkit-line-clamp:2;
+  }
+  #game-screen .turn-actions{
+    grid-column:1;
+    grid-row:2;
+    width:100%;
+    min-width:0;
+  }
+}
+@media(max-height:470px) and (orientation:landscape){
+  #game-screen .turn-panel{
+    grid-template-columns:minmax(0,1fr);
+    grid-template-rows:minmax(0,1fr) 38px;
+    gap:6px;
+  }
+  #game-screen .candidate{
+    grid-column:1;
+    grid-row:1;
+    width:100%;
+    min-width:0;
+  }
+  #game-screen .candidate-copy{
+    flex:1 1 auto;
+    min-width:0;
+  }
+  #game-screen .candidate-copy h3{
+    width:100%;
+    font-size:17px;
+    -webkit-line-clamp:2;
+  }
+  #game-screen .turn-actions{
+    grid-column:1;
+    grid-row:2;
+    width:100%;
+    min-width:0;
+  }
+}
+
+@media(max-width:370px){
+  #game-screen .timeline-heading h2{font-size:14px;letter-spacing:.6px;white-space:nowrap}
 }
