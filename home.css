@@ -402,3 +402,17 @@ body[data-screen="setup"] .site-footer .credits-word{color:#f6d899}
  #setup-screen .ticket-heading h1{font-size:27px;padding-inline:13px}
  #setup-screen .start-button{font-size:15.5px;padding-inline:17px}
 }
+
+/* v11 — logo oficial no cabeçalho; restante da home preservado */
+body[data-screen="setup"] .brand-logo-link{
+  display:flex;align-items:center;width:auto;height:100%;padding:2px 0;text-decoration:none;overflow:visible;
+}
+body[data-screen="setup"] .brand-logo-image{
+  display:block;width:158px;height:auto;max-height:68px;object-fit:contain;filter:drop-shadow(0 5px 8px #14030a42);
+}
+@media(max-width:560px){
+  body[data-screen="setup"] .brand-logo-image{width:104px;max-height:48px}
+}
+@media(max-height:520px) and (orientation:landscape){
+  body[data-screen="setup"] .brand-logo-image{width:94px;max-height:42px}
+}
