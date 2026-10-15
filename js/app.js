@@ -25,7 +25,7 @@ function showError(id, message = '') { $(id).textContent = message; $(id).hidden
 function modal(html) { $('dialog-content').innerHTML = html; hydrateIcons($('info-dialog')); $('info-dialog').showModal(); }
 $('info-dialog').querySelector('.dialog-close').addEventListener('click', () => $('info-dialog').close());
 $('info-dialog').addEventListener('click', e => { if (e.target === $('info-dialog')) { const r = e.target.getBoundingClientRect(); if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.target.close(); } });
-$('help-button').addEventListener('click', () => modal(`<h2>Um filme de cada vez.</h2><div class="help-step"><b>1</b><p><strong>Monte sua sessão.</strong> Escolha filmes, vidas e categorias. Em Incluir, você combina opções; em Excluir, remove o que não quer.</p></div><div class="help-step"><b>2</b><p><strong>Encontre o lugar do filme.</strong> Um filme-base já aparece com seu ano. Arraste o novo cartaz para antes, depois ou entre filmes. Também vale tocar nos espaços ou usar as setas de posição.</p></div><div class="help-step"><b>3</b><p><strong>Confirme e descubra.</strong> Acertou? O filme fica na linha. Errou? Perde uma vida e o filme é descartado. Depois, avance para o próximo.</p></div><p class="modal-note"><strong>Mesmo ano? Sem pegadinha.</strong> Qualquer posição que mantenha os anos em ordem é aceita. A regra usa o ano da data principal de lançamento do TMDB, sem filtro regional do Brasil.</p><p><strong>Catálogo:</strong> O Movieline seleciona automaticamente filmes conhecidos, com pelo menos 1.000 votos no TMDB. É um critério aproximado de reconhecimento. O filme-base não conta na meta. Cada tentativa conta como um filme, acertando ou errando. Sem limite de filmes, o catálogo é reembaralhado apenas quando o ciclo se esgota. Você pode encerrar a qualquer momento.</p><p><strong>Teclado:</strong> Tab navega; Enter ativa botões; com o cartaz em foco, ← e → escolhem a posição. A roda do mouse e dois dedos percorrem a linha horizontal.</p>`));
+$('help-button').addEventListener('click', () => modal(`<h2>Um filme de cada vez.</h2><div class="help-step"><b>1</b><p><strong>Monte sua sessão.</strong> Escolha filmes, vidas e categorias. Em Incluir, você combina opções; em Excluir, remove o que não quer.</p></div><div class="help-step"><b>2</b><p><strong>Encontre o lugar do filme.</strong> Um filme-base já aparece com seu ano. Arraste o novo cartaz para antes, depois ou entre filmes. Também vale tocar nos botões + da linha.</p></div><div class="help-step"><b>3</b><p><strong>Confirme e descubra.</strong> Acertou? O filme fica na linha. Errou? Perde uma vida e o filme é descartado. Depois, avance para o próximo.</p></div><p class="modal-note"><strong>Mesmo ano? Sem pegadinha.</strong> Qualquer posição que mantenha os anos em ordem é aceita. A regra usa o ano da data principal de lançamento do TMDB, sem filtro regional do Brasil.</p><p><strong>Catálogo:</strong> O Movieline seleciona automaticamente filmes conhecidos, com pelo menos 1.000 votos no TMDB. É um critério aproximado de reconhecimento. O filme-base não conta na meta. Cada tentativa conta como um filme, acertando ou errando. Sem limite de filmes, o catálogo é reembaralhado apenas quando o ciclo se esgota. Você pode encerrar a qualquer momento.</p><p><strong>Teclado:</strong> Tab navega; Enter ativa botões; escolha um botão + com Tab e ative com Enter. A roda do mouse e dois dedos percorrem a linha horizontal.</p>`));
 $('credits-button').addEventListener('click', () => modal(creditsHTML()));
 function updateSound() {
   $('sound-button').innerHTML = icon(sound ? 'sound-on' : 'sound-off');
@@ -176,10 +176,10 @@ function renderTimeline(force=false) {
   for(let i=first;i<=last;i++){
     const selected=game.phase==='placing'&&game.slot===i;
     const slotContent=selected?`${poster(game.current,'slot-movie-poster')}<span class="slot-question">?</span><div class="slot-movie-title">${escapeHTML(game.current.title)}</div>`:'<b aria-hidden="true">+</b>';
-    html+=`<div class="timeline-slot ${selected?'selected':''}" data-slot="${i}" style="left:${offset+i*stride}px"><button class="slot-button" ${selected?'data-current="true"':''} ${game.phase!=='placing'?'disabled':''} aria-label="${escapeHTML(slotLabel(i))}${selected?', posição selecionada':''}">${slotContent}</button></div>`;
+    html+=`<div class="timeline-slot ${selected?'selected':''}" data-slot="${i}" style="left:${offset+i*stride}px"><button class="slot-button${selected?' film-frame':''}" ${selected?'data-current="true"':''} ${game.phase!=='placing'?'disabled':''} aria-label="${escapeHTML(slotLabel(i))}${selected?', posição selecionada':''}">${slotContent}</button></div>`;
     if(i<game.timeline.length){
       const m=game.timeline[i],justPlaced=game.reveal?.correct&&m.instance===`turn-${game.attempted}`;
-      html+=`<div class="timeline-unit" data-instance="${escapeHTML(m.instance)}" style="left:${offset+slot+i*stride}px"><article class="movie-card ${justPlaced?'new-card':''}">${poster(m)}${m.instance==='base'?'<span class="base-label">BASE</span>':''}<div class="card-year">${m.year}</div><div class="card-title" title="${escapeHTML(m.title)}">${escapeHTML(m.title)}</div></article><span class="timeline-dot"></span></div>`;
+      html+=`<div class="timeline-unit" data-instance="${escapeHTML(m.instance)}" style="left:${offset+slot+i*stride}px"><article class="film-frame movie-card ${justPlaced?'new-card':''}">${poster(m)}${m.instance==='base'?'<span class="base-label">BASE</span>':''}<div class="card-year">${m.year}</div><div class="card-title" title="${escapeHTML(m.title)}">${escapeHTML(m.title)}</div></article><span class="timeline-dot"></span></div>`;
     }
   }
   $('timeline-track').innerHTML=html;handleImages($('timeline-track'));
@@ -187,8 +187,8 @@ function renderTimeline(force=false) {
 }
 function renderCandidate() {
   const revealed=game.phase!=='placing',m=game.current;
-  $('candidate').innerHTML=`${poster(m)}<div class="candidate-copy"><small>FILME DA VEZ</small><h3 title="${escapeHTML(m.title)}">${escapeHTML(m.title)}</h3><span class="candidate-year">${revealed?m.year:'?'}</span></div><span class="candidate-grip" aria-hidden="true">${icon('grip')}</span>`;
-  $('candidate').setAttribute('aria-label',revealed?`${m.title}, ${m.year}`:`${m.title}. Arraste para a linha ou use as setas para escolher a posi\u00e7\u00e3o.`);
+  $('candidate').innerHTML=`${poster(m)}<div class="candidate-copy"><small>FILME DA VEZ</small><h3 title="${escapeHTML(m.title)}">${escapeHTML(m.title)}</h3><span class="candidate-year">${revealed?m.year:'?'}</span></div>`;
+  $('candidate').setAttribute('aria-label',revealed?`${m.title}, ${m.year}`:`${m.title}. Arraste para a linha ou toque em um espaço para escolher a posição.`);
   $('candidate').setAttribute('aria-disabled',String(revealed));handleImages($('candidate'));
 }
 function renderStats() {
@@ -203,21 +203,21 @@ function renderGame() {
   renderStats();renderTimeline(true);renderCandidate();showError('game-error');
   const revealed=game.phase!=='placing';$('turn-panel').className=`turn-panel${revealed?' revealed':''}`;
   $('confirm-button').hidden=revealed;$('confirm-button').disabled=game.slot===null;
-  $('review-answer').hidden=!revealed;document.querySelector('.position-buttons').hidden=revealed;
+  $('review-answer').hidden=!revealed;
   $('placement-label').textContent=game.slot===null?'Escolha uma posi\u00e7\u00e3o na linha.':slotLabel(game.slot);
   if(!revealed&&$('reveal-popup').open)$('reveal-popup').close();
 }
 function nextButtonLabel(label=null) {
-  $('popup-next-button').innerHTML=icon('ticket')+`<span>${label||(game?.endReason?'Ver resultado':'Pr\u00f3ximo filme')}</span>`+icon('arrow-right');
+  $('popup-next-button').innerHTML=`<span>${label||(game?.endReason?'Ver resultado':'Próximo filme')}</span>`;
 }
 function openReveal() {
   if(!game||game.phase!=='revealed'||busy)return;
   const correct=game.reveal.correct,m=game.reveal.movie,popup=$('reveal-popup');
   popup.classList.toggle('is-correct',correct);popup.classList.toggle('is-wrong',!correct);
-  $('reveal-title').textContent=correct?'Acertou!':'Errou!';$('reveal-status').innerHTML=icon(correct?'check':'close');
+  $('reveal-title').textContent=correct?'ACERTOU':'ERROU';
   $('reveal-film-name').textContent=m.title;$('reveal-film-year').textContent=m.year;
   $('reveal-film-year').setAttribute('aria-label','Ano correto: '+m.year);
-  $('reveal-detail').textContent=correct?(game.streak>1?game.streak+' acertos seguidos':'Na ordem certa!'):(game.lives===null?'Sua linha continua intacta.':'\u2212 1 vida');
+  $('reveal-detail').textContent=correct?(game.streak>1?game.streak+' acertos seguidos':'Na ordem certa.'):(game.lives===null?'Sua linha continua intacta.':'− 1 vida');
   showError('reveal-error');nextButtonLabel();$('popup-next-button').disabled=false;$('reveal-close').disabled=false;
   if(!popup.open)popup.showModal();$('popup-next-button').focus({preventScroll:true});
 }
@@ -236,30 +236,24 @@ $('reveal-popup').addEventListener('keydown',e=>{
 $('reveal-popup').addEventListener('close',()=>{
   if(document.body.dataset.screen==='game'&&game?.phase==='revealed')$('review-answer').focus({preventScroll:true});
 });
-function selectSlot(index,scroll=false) {
+function selectSlot(index) {
   if(!game||game.phase!=='placing'||busy)return;
   game.slot=Math.max(0,Math.min(game.timeline.length,index));
   renderTimeline(true);$('confirm-button').disabled=false;$('placement-label').textContent=slotLabel(game.slot);
   $('live-region').textContent=`Posição escolhida: ${slotLabel(game.slot)}. Confirme quando estiver pronto.`;
-  if(scroll){
-    const el=$('timeline-scroll'),x=geometry.offset+game.slot*geometry.stride;
-    if(x<el.scrollLeft||x+geometry.slot>el.scrollLeft+el.clientWidth)
-      el.scrollTo({left:Math.max(0,x-el.clientWidth/2+geometry.slot/2),behavior:'smooth'});
-  }
   persistGame();
 }
 $('timeline-track').addEventListener('click',e=>{
   if(suppressClick)return;const el=e.target.closest('[data-slot]');if(el)selectSlot(Number(el.dataset.slot));
 });
-$('position-left').addEventListener('click',()=>selectSlot(game.slot===null?0:game.slot-1,true));
-$('position-right').addEventListener('click',()=>selectSlot(game.slot===null?game.timeline.length:game.slot+1,true));
+// Keyboard users activate the same + buttons; no separate movement shortcuts.
 $('candidate').addEventListener('keydown',e=>{
-  if(!game||game.phase!=='placing')return;
-  if(['ArrowLeft','ArrowRight','Enter',' '].includes(e.key)){
-    e.preventDefault();if(e.key==='ArrowLeft')selectSlot(game.slot===null?0:game.slot-1,true);
-    else if(e.key==='ArrowRight')selectSlot(game.slot===null?game.timeline.length:game.slot+1,true);
-    else if(game.slot===null)selectSlot(Math.ceil(game.timeline.length/2),true);else $('confirm-button').focus({preventScroll:true});
-  }
+  if(!game||game.phase!=='placing'||busy||!['Enter',' '].includes(e.key))return;
+  e.preventDefault();
+  const viewport=$('timeline-scroll').getBoundingClientRect();
+  const visible=[...$('timeline-track').querySelectorAll('.slot-button:not(:disabled)')]
+    .filter(el=>{const r=el.getBoundingClientRect();return r.right>viewport.left&&r.left<viewport.right;});
+  visible[0]?.focus({preventScroll:true});
 });
 $('timeline-scroll').addEventListener('wheel',e=>{
   if(e.ctrlKey)return;const v=e.currentTarget;
@@ -281,10 +275,12 @@ function updateDragHover(x,y){
   if(index!==null)$('timeline-track').querySelector(`[data-slot="${index}"]`)?.classList.add('drop-hover');
 }
 document.addEventListener('pointerdown',e=>{
-  if(!game||game.phase!=='placing'||busy||e.button!==0)return;
+  if(!game||game.phase!=='placing'||busy||drag||e.button!==0)return;
   const handle=e.target.closest('#candidate, [data-current]');if(!handle)return;
-  drag={id:e.pointerId,startX:e.clientX,startY:e.clientY,x:e.clientX,y:e.clientY,active:false,handle};
-  handle.setPointerCapture(e.pointerId);
+  // Capture on a stable parent: virtualized cards can be replaced during scrolling.
+  const capture=$('game-screen');
+  drag={id:e.pointerId,startX:e.clientX,startY:e.clientY,x:e.clientX,y:e.clientY,active:false,handle:capture};
+  try{capture.setPointerCapture(e.pointerId);}catch{drag=null;}
 });
 document.addEventListener('pointermove',e=>{
   if(!drag||e.pointerId!==drag.id)return;drag.x=e.clientX;drag.y=e.clientY;
@@ -300,12 +296,15 @@ document.addEventListener('pointermove',e=>{
 function endDrag(e,cancel=false){
   if(!drag||e.pointerId!==drag.id)return;
   const shouldPlace=drag.active&&!cancel&&hoverSlot!==null,index=hoverSlot;
-  drag.ghost?.remove();if(drag.handle.hasPointerCapture(drag.id))drag.handle.releasePointerCapture(drag.id);
+  const active=drag;drag=null;
+  active.ghost?.remove();if(active.handle.hasPointerCapture(active.id))active.handle.releasePointerCapture(active.id);
   $('candidate').classList.remove('dragging');document.querySelector('.drop-hover')?.classList.remove('drop-hover');
-  drag=null;hoverSlot=null;if(shouldPlace)selectSlot(index,false);
+  drag=null;hoverSlot=null;if(shouldPlace)selectSlot(index);
   setTimeout(()=>suppressClick=false,0);
 }
 document.addEventListener('pointerup',e=>endDrag(e));document.addEventListener('pointercancel',e=>endDrag(e,true));
+document.addEventListener('lostpointercapture',e=>{if(drag?.id===e.pointerId)endDrag(e,true);});
+window.addEventListener('blur',()=>{if(drag)endDrag({pointerId:drag.id},true);});
 $('confirm-button').addEventListener('click',()=>{
   if(busy||!game||game.phase!=='placing'||game.slot===null)return;
   const correct=confirmMovie(game);beep(correct);renderGame();persistGame();openReveal();

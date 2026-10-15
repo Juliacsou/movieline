@@ -9,8 +9,8 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;650;700&family=Fraunces:ital,opsz,wght@0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,600&family=Barlow+Condensed:wght@500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./styles.css?v=6">
 <link rel="stylesheet" href="./home.css?v=5">
-<link rel="stylesheet" href="./game.css?v=6">
-<script type="module" src="./js/app.js?v=6"></script>
+<link rel="stylesheet" href="./game.css?v=7">
+<script type="module" src="./js/app.js?v=7"></script>
 </head>
 <body data-screen="setup">
 <div class="home-stage" aria-hidden="true">
@@ -74,11 +74,10 @@
   <div class="timeline-bottom"><span class="scroll-cue" aria-hidden="true"><span data-icon="mouse"></span><span data-icon="arrow-left"></span><span data-icon="arrow-right"></span></span><div class="timeline-nav"><button class="icon-button" id="scroll-left" title="Rolar para a esquerda" aria-label="Rolar linha para a esquerda"><span data-icon="arrow-left"></span></button><button class="icon-button" id="scroll-right" title="Rolar para a direita" aria-label="Rolar linha para a direita"><span data-icon="arrow-right"></span></button></div></div>
  </section>
  <div class="turn-panel" id="turn-panel">
-  <div id="candidate" class="candidate" tabindex="0" role="button" aria-label="Arraste o filme para a linha do tempo" aria-describedby="placement-label"></div>
+  <div id="candidate" class="candidate" tabindex="0" role="group" aria-label="Arraste o filme para a linha do tempo" aria-describedby="placement-label"></div>
   <div class="turn-actions">
-   <div class="position-buttons"><button class="outline-button" id="position-left" title="Mover para a esquerda" aria-label="Mover filme uma posi&#231;&#227;o para a esquerda"><span data-icon="arrow-left"></span></button><span data-icon="grip" aria-hidden="true"></span><button class="outline-button" id="position-right" title="Mover para a direita" aria-label="Mover filme uma posi&#231;&#227;o para a direita"><span data-icon="arrow-right"></span></button></div>
-   <button class="ticket-action" id="confirm-button" disabled><span data-icon="check"></span><span>REVELAR</span></button>
-   <button class="ticket-action" id="review-answer" hidden><span data-icon="clapper"></span><span>VER RESPOSTA</span></button>
+   <button class="ticket-action" id="confirm-button" disabled><span>REVELAR</span></button>
+   <button class="ticket-action" id="review-answer" hidden><span>VER RESPOSTA</span></button>
   </div><div id="placement-label" class="sr-only" aria-live="polite"></div>
  </div><div id="game-error" class="error-message game-error" role="alert" hidden></div>
 </section>
@@ -101,10 +100,10 @@
  <div class="reveal-popup-card"><div class="clapper-rail" aria-hidden="true"></div>
   <div class="reveal-popup-body">
    <button type="button" class="icon-button reveal-close" id="reveal-close" title="Ver a linha" aria-label="Fechar resposta e ver a linha do tempo"><span data-icon="close"></span></button>
-   <div class="reveal-status" id="reveal-status" aria-hidden="true"></div><h2 id="reveal-title">Acertou!</h2>
+   <h2 id="reveal-title">ACERTOU</h2>
    <p class="reveal-film-name" id="reveal-film-name"></p><p class="reveal-film-year" id="reveal-film-year"></p><p class="reveal-detail" id="reveal-detail"></p>
    <div id="reveal-error" class="error-message" role="alert" hidden></div>
-   <button class="ticket-action ticket-next-button" id="popup-next-button" type="button"><span data-icon="ticket"></span><span>Pr&oacute;ximo filme</span><span data-icon="arrow-right"></span></button>
+   <button class="ticket-action ticket-next-button" id="popup-next-button" type="button"><span>Pr&oacute;ximo filme</span></button>
   </div>
  </div>
 </dialog>
